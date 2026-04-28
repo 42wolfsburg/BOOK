@@ -4,6 +4,4 @@ app = FastAPI()
 
 @app.get("/")
 def home():
-    return("testtest")
-
-print("tets")
+    return{"test message"}

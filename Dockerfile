@@ -1,12 +1,13 @@
-# Example for a Node.js app — swap base image for your stack
-FROM node:20-alpine
+FROM python:3.11-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
+COPY requirements.txt ./
+
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 3000
-CMD ["node", "index.js"]
+EXPOSE 8000
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
