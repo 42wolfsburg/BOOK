@@ -12,6 +12,8 @@ class Settings(BaseSettings):
 	POSTGRES_DB: str
 	POSTGRES_HOST: str
 	POSTGRES_PORT: int
+	BACKEND_HOST: str
+	BACKEND_PORT: int
 	model_config = ConfigDict(env_file=".env")
 
     # class Config:
