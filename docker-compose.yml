@@ -4,6 +4,8 @@ services:
       context: ./backend
     ports:
       - "9000:9000"
+    env_file:
+      - ".env"
     environment:
       - PORT=${BACKEND_PORT}
       - HOST=${BACKEND_HOST}
@@ -11,7 +13,7 @@ services:
     depends_on:
       - postgres
     volumes:
-      - .:/app
+      - ./backend:/app
 
   postgres:
     image: postgres:17.6
