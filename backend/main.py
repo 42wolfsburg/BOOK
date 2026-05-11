@@ -3,34 +3,28 @@ from loguru import logger
 from contextlib import asynccontextmanager
 from app.api.routes import router
 
-# @asynccontextmanager
-# async def lifespan(app: FastAPI) -> None:
-# 	"""
-# 	"""
-# 	try:
-# 		logger.info("Initializing database...")
-# 		await init_db()
-# 		logger.info("Database ready!")
-# 	except Exception as e:
-# 		logger.error(f"failed to initialize dependencies: {e}")
-# 		raise
-# 	yield
-# 	logger.info("Shutting down application...")
-# 	await close_db()
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> None:
+	"""
+	Lifespan function that takes care of setup and tear down of program. If something
+	must be initialized once, you should insert it before the `yield` keyword and for
+	whatever should be closed once at the end, put it after the keyword.
+	"""
+	logger.info("Initializing database...")
+	init_db()
+	logger.info("Database ready!")
+	yield
+	logger.info("Shutting down application...")
+	close_db()
 
 app = FastAPI(
 	title="BOOK",
 	description="BOOK's Online Occupancy Keeper",
 	version="1.0.0",
-	# lifespan=lifespan	
+	lifespan=lifespan	
 )
 
 app.include_router(router)
-
-# @app.get("/")
-# def home():
-#     return{"test message"}
-# endpoints go on /backend/app/api
 
 def setup_logger():
 	"""
