@@ -11,7 +11,7 @@ async def lifespan(app: FastAPI) -> None:
 	whatever should be closed once at the end, put it after the keyword.
 	"""
 	logger.info("Initializing database...")
-	init_db()
+	app.state.pool = init_db()
 	logger.info("Database ready!")
 	yield
 	logger.info("Shutting down application...")
