@@ -10,6 +10,19 @@ class crud:
 		end_at: str
 		) -> dict:
 		"""
+		:Parameters:
+		------------
+		intra: str
+
+		room_name: str
+
+		begin_at
+
+		end_at
+
+		:Returns:
+		---------
+		
 		"""
 		logger.info(f"New insertion for {intra}")
 		conn = connection_pool.getconn()
@@ -24,7 +37,9 @@ class crud:
 				intra, room_name, begin_at, end_at
 				)
 		finally:
+			conn.commit()
 			connection_pool.putconn(conn)
+
 
 	def db_delete_booking(self, id: str) -> None:
 		"""
@@ -37,9 +52,11 @@ class crud:
 				"""
 				DELETE FROM bookings
 				WHERE id = $1
-				""", id)
+				""", (id,))
 		finally:
+			conn.commit()
 			connection_pool.putconn(conn)
+
 
 	def db_update_booking(
 		self, 
@@ -56,12 +73,14 @@ class crud:
 				cursor.execute(
 				"""
 				UPDATE bookings
-				SET begin_at = $1 AND end_at = $2
+				SET begin_at = $1, end_at = $2
 				WHERE id = $3
 				RETURNING id, intra, room_name, begin_at, end_at, is_staff
-				""", )
+				""", begin_at, end_at, id)
 		finally:
+			conn.commit()
 			connection_pool.putconn(conn)
+
 
 	def db_get_booking(self, id: str) -> dict:
 		"""
@@ -74,9 +93,10 @@ class crud:
 				SELECT begin_at, end_at
 				FROM bookings
 				WHERE id = $1
-				""", )
+				""", (id,))
 		finally:
 			connection_pool.putconn(conn)
+
 
 	def db_get_all_bookings(self) -> dict:
 		"""
@@ -84,7 +104,7 @@ class crud:
 		conn = connection_pool.getconn()
 		try:
 			with conn.cursor() as cursor:
-				cursor.execute("SELECT * FROM rooms;")
+				cursor.execute("SELECT * FROM bookings;")
 				return cursor.fetchall()
 		finally:
 			connection_pool.putconn(conn)
