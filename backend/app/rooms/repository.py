@@ -4,7 +4,7 @@ from loguru import logger
 class crud:
 	def db_insert_booking(
 		self, 
-		intra: str, 
+		intra: str,
 		room_name: str, 
 		begin_at: str, 
 		end_at: str
@@ -41,7 +41,12 @@ class crud:
 		finally:
 			connection_pool.putconn(conn)
 
-	def db_update_booking(self, id: str, begin_at: str, end_at: str) -> dict:
+	def db_update_booking(
+		self, 
+		id: str,
+		begin_at: str,
+		end_at: str
+		) -> dict:
 		"""
 		"""
 		logger.info(f"Updating event for id: {id}")
