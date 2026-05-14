@@ -1,5 +1,6 @@
 from loguru import logger
 from fastapi import APIRouter, status, Response
+from ..rooms.repository import crud
 
 router = APIRouter()
 
@@ -12,6 +13,10 @@ async def root():
 		"Author": "42Wolfsburg",
 		"status": "development"
 	})
+
+@router.get("/rooms")
+async def rooms():
+	return crud.db_get_all_bookings()
 
 @router.get("/api/rooms/{room_name}/bookings", status_code=status.HTTP_202_ACCEPTED)
 async def get_room(room_name: str, response: Response):
