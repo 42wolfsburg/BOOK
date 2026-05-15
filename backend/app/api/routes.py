@@ -35,7 +35,7 @@ async def booking(
 	status: default 202, success 200, fail 400
 	"""
 	try:
-		response["resource"] = await service.get_booking()
+		response["resource"] = await service.get_booking(pl.id)
 		response["status"] = status.HTTP_200_OK
 		return 
 	except Exception as err:
@@ -55,7 +55,12 @@ async def booking(
 	status: default 202, success 201, slot used 502, other 400
 	"""
 	try:
-		["resource"] = await service.register_booking(intra=pl.intra ,room_name=room_name, begin_at=str(pl.begin_at), end_at=str(pl.end_at))
+		["resource"] = await service.register_booking(
+			intra=pl.intra,
+			room_name=room_name,
+			begin_at=str(pl.begin_at),
+			end_at=str(pl.end_at)
+			)
 		# response = status.HTTP_201_CREATED
 	except ValidationError as err:
 		response["status"] = status.HTTP_400_BAD_REQUEST
@@ -77,10 +82,15 @@ async def booking(
 	status: default 202, success 200, fail 400
 	"""
 	try:
-		resource = await service.update_booking(begin_at=str(pl.begin_at), end_at=str(pl.end_at) ,id=id)
+		response["resource"] = await service.update_booking(
+			begin_at=str(pl.begin_at),
+			end_at=str(pl.end_at),
+			id=id
+			)
 	except ValidationError as err:
-		response = status.HTTP_400_BAD_REQUEST
-		return err
+		response["status"] = status.HTTP_400_BAD_REQUEST
+		response["error"] = err
+	return response
 
 @router.delete("/api/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def booking(
@@ -92,6 +102,7 @@ async def booking(
 	status: always 204
 	"""
 	try:
-		resource = await service.delete_booking(id=id)
+		response["resource"] = await service.delete_booking(id=id)
 	except Exception as err:
-		return err
+		response["error"] = err
+	return response
