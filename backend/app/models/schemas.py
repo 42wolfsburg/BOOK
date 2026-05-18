@@ -7,8 +7,8 @@ unix_hour: float = 3600
 unix_month: float = 2629743
 meeting_rooms = [
 	"space",
-	"swimming pool",
-	"space invader",
+	"swimming-pool",
+	"space-invader",
 	"gallery"
 ]
 
