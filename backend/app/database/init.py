@@ -27,7 +27,7 @@ def init_db():
 	
 	return connection_pool
 
-	def close_db():
-		if connection_pool:
-			connection_pool.closeall()
+def close_db():
+	if connection_pool:
+		connection_pool.closeall()
 
