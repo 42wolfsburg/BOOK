@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from loguru import logger
 from contextlib import asynccontextmanager
 from app.api.routes import router
+from app.database.init import init_db, close_db
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> None:
