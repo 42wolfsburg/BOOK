@@ -31,11 +31,6 @@ export default function Header() {
         {/* right section */}
         <div className="flex flex-wrap items-center gap-3">
 
-          {/* My Bookings */}
-          <button className="flex h-[44px] items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-sm font-medium text-slate-700 transition hover:bg-slate-50">
-            My Bookings
-          </button>
-
           {/* divider */}
           <div className="h-6 w-px bg-slate-200" />
 
