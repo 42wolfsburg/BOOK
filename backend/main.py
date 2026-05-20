@@ -52,7 +52,7 @@ def setup_logger():
 	    colorize=True,
 	    filter=lambda record: record["level"].name in ("INFO", "WARNING", "ERROR", "CRITICAL") or record["extra"].get("stdout_only")
 	)
-	logger.add(f"logs/medic.log", filter=lambda record: not record["extra"].get("stdout_only"))
+	logger.add(f"logs/BOOK.log", filter=lambda record: not record["extra"].get("stdout_only"))
 	return logger, sink_id	
 
 def main():
