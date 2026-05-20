@@ -34,10 +34,14 @@ async def register_booking(
 		boolean value indicating if it's a staff member or not.
 	
 	"""
-	resource: dict = crud.db_insert_booking()
+	resource: dict = crud.db_insert_booking(intra, room_name, begin_at, end_at)
+
 	return resource
 
-async def delete_booking(id: str) -> None:
+async def delete_booking(
+	room_name:str, 
+	id: str
+	) -> None:
 	"""
 	Function responsible for deletion of bookings. According to REST architecture
 	we should not return anything, as the action itself is a result of deletion of
@@ -49,9 +53,10 @@ async def delete_booking(id: str) -> None:
 	id: str
 		UUID provideed during the registration of booking.
 	"""
-	crud.db_delete_booking()
+	crud.db_delete_booking(room_name, id)
 
 async def update_booking(
+	room_name: str,
 	id: str, 
 	begin_at: str,
 	end_at: str
@@ -75,10 +80,13 @@ async def update_booking(
 	resource: dict
 		Dictionary containing updated booking following REST architecture.
 	"""
-	resource: dict = crud.db_update_booking()
+	resource: dict = crud.db_update_booking(room_name, id, begin_at, end_at)
 	return resource
 
-async def get_booking(id: str) -> dict:
+async def get_booking(
+	room_name: str,
+	id: str
+	) -> dict:
 	"""
 	Function responsible for returning specific booking according to a correct ID
 	provided during registration of the same.
@@ -96,7 +104,7 @@ async def get_booking(id: str) -> dict:
 		intra, name of the room in which booking is taking place, and 
 		boolean value indicating if it's a staff member or not.
 	"""
-	resource: dict = crud.db_get_booking()
+	resource: dict = crud.db_get_booking(room_name, id)
 	return resource
 
 async def get_all_bookings() -> dict:
