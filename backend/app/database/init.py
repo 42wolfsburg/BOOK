@@ -20,7 +20,7 @@ def init_db():
 	conn = connection_pool.getconn()
 	try:
 		with conn.cursor() as cursor:
-			cursor.execute(open("schema.sql", "r").read())
+			cursor.execute(open(_SCHEMA_PATH, "r").read())
 		conn.commit()
 	finally:
 		connection_pool.putconn(conn)
