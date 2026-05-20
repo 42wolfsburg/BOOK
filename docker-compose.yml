@@ -10,6 +10,7 @@ services:
       - PORT=${BACKEND_PORT}
       - HOST=${BACKEND_HOST}
       - DATABASE_URL=${DATABASE_URL}
+      - UV_LINK_MODE=copy
     depends_on:
       - postgres
     volumes:
