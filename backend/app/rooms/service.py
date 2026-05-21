@@ -1,4 +1,5 @@
 from ..rooms.repository import crud
+from uuid import UUID
 
 db = crud()
 
@@ -42,7 +43,7 @@ async def register_booking(
 
 async def delete_booking(
 	room_name:str, 
-	id: str
+	id: UUID
 	) -> None:
 	"""
 	Function responsible for deletion of bookings. According to REST architecture
@@ -59,7 +60,7 @@ async def delete_booking(
 
 async def update_booking(
 	room_name: str,
-	id: str, 
+	id: UUID, 
 	begin_at: int,
 	end_at: int
 	) -> dict:
@@ -87,7 +88,7 @@ async def update_booking(
 
 async def get_booking(
 	room_name: str,
-	id: str
+	id: UUID
 	) -> dict:
 	"""
 	Function responsible for returning specific booking according to a correct ID
@@ -113,5 +114,5 @@ async def get_all_bookings() -> dict:
 	"""
 	NOT SUPPOSED TO BE DEPLOYED! MOSTLY FOR TESTING PURPOSES
 	"""
-	resource: dict = db.db_get_all_bookings()
+	resource = db.db_get_all_bookings()
 	return resource
