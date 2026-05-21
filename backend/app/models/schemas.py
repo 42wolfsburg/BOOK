@@ -1,7 +1,7 @@
 from typing import Any, Optional
 from time import time
 from enum import Enum
-from pydantic import BaseModel, Field, model_validator, ValidationError
+from pydantic import BaseModel, Field, model_validator, field_validator
 
 unix_hour: float = 3600
 unix_month: float = 2629743
@@ -33,21 +33,27 @@ class RoomName(str, Enum):
 # 	id: str = Field(..., min_length=16, max_length=128)
 
 class BookingRequest(BaseModel):
-	intra: str = Field(..., min_length=1, max_length=10)
-	# Field() only takes static values. We can't do arithmetic operations in it.
-	# begin_at: float = Field(..., ge=time(), le=(time() + (unix_month * 3)))
-	# end_at: float = Field(..., ge=begin_at, le=(begin_at + (unix_hour * 3)))
-	begin_at: float = Field(...)
-	end_at: float = Field(...)
+	intra: str
+	begin_at: int
+	end_at: int
 
-	@model_validator(mode="after")
-	def validate(self) -> 'BookingRequest':
-		if self.end_at < self.begin_at:
-			raise ValueError("end_at must be >= begin_at")
-		if self.end_at > self.begin_at + (unix_hour * 3):
-			raise ValueError("end_at must be within three hours of begin_at")
-		return self
+	@field_validator("begin_at", "end_at")
+	@classmethod
+	def must_be_valid_timestamp(cls, v: int) -> int:
+		# Unix timestamps are positive and shouldn't be absurdly far in the future
+		if v < 0:
+			raise ValueError("Timestamp cannot be negative")
+		if v > 9_999_999_999:  # year ~2286, reasonable upper bound
+			raise ValueError("Timestamp is unrealistically large")
+		return v
 
+	@field_validator("end_at")
+	@classmethod
+	def end_must_be_after_begin(cls, v: int, info) -> int:
+		begin = info.data.get("begin_at")
+		if begin is not None and v <= begin:
+			raise ValueError("end_at must be after begin_at")
+		return v
 
 class BookingCreation(BaseModel):
 	intra: str = Field(..., min_length=1, max_length=10)
