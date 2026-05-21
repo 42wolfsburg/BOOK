@@ -1,5 +1,5 @@
 from loguru import logger
-from fastapi import APIRouter, status, Path
+from fastapi import APIRouter, status, Path, HTTPException
 from pydantic import ValidationError
 from ..rooms.service import crud
 from ..rooms import service
@@ -18,7 +18,7 @@ async def root():
 		"status": "development"
 	})
 
-@router.get("/rooms")
+@router.get("/api/rooms")
 async def rooms():
 	return crud.db_get_all_bookings()
 
@@ -42,7 +42,6 @@ async def booking(
 		response["error"] = err
 	return response
 
-#TODO include payload in call
 @router.post("/api/rooms/{room_name}/bookings", status_code=status.HTTP_201_CREATED)
 async def booking(
 	room_name: RoomName,
@@ -57,15 +56,13 @@ async def booking(
 		response["resource"] = await service.register_booking(
 			intra=pl.intra,
 			room_name=room_name,
-			begin_at=str(pl.begin_at),
-			end_at=str(pl.end_at)
+			begin_at=pl.begin_at,
+			end_at=pl.end_at
 			)
-	except ValidationError as err:
-		response["status"] = status.HTTP_400_BAD_REQUEST
+		return response	
 	except Exception as err:
-		response["status"] = status.HTTP_502_BAD_GATEWAY
-		response["error"] = err
-	return response	
+		raise HTTPException(status_code=400, detail=str(err))
+
 
 #TODO include payload in call
 @router.patch("/api/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_201_CREATED)
@@ -85,8 +82,8 @@ async def booking(
 	try:
 		response["resource"] = await service.update_booking(
 			room_name,
-			begin_at=str(pl.begin_at),
-			end_at=str(pl.end_at),
+			begin_at=pl.begin_at,
+			end_at=pl.end_at,
 			id=id
 			)
 	except ValidationError as err:
