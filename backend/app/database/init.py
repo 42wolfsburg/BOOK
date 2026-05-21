@@ -27,6 +27,11 @@ def init_db():
 	
 	return connection_pool
 
+def get_pool() -> pool.SimpleConnectionPool:
+	if connection_pool is None:
+		raise RuntimeError("Database pool not initialized")
+	return connection_pool
+
 def close_db():
 	if connection_pool:
 		connection_pool.closeall()
