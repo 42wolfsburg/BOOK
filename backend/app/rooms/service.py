@@ -1,10 +1,12 @@
 from ..rooms.repository import crud
 
+db = crud()
+
 async def register_booking(
 	intra: str,
 	room_name: str,
-	begin_at: str,
-	end_at: str
+	begin_at: int,
+	end_at: int
 	) -> dict:
 	"""
 	Function responsible for registration of booking. The same registration is
@@ -34,7 +36,7 @@ async def register_booking(
 		boolean value indicating if it's a staff member or not.
 	
 	"""
-	resource: dict = crud.db_insert_booking(intra, room_name, begin_at, end_at)
+	resource: dict = db.db_insert_booking(intra, room_name, begin_at, end_at)
 
 	return resource
 
@@ -58,8 +60,8 @@ async def delete_booking(
 async def update_booking(
 	room_name: str,
 	id: str, 
-	begin_at: str,
-	end_at: str
+	begin_at: int,
+	end_at: int
 	) -> dict:
 	"""
 	Function responsible for intermediating database call for in a service layer.
@@ -80,7 +82,7 @@ async def update_booking(
 	resource: dict
 		Dictionary containing updated booking following REST architecture.
 	"""
-	resource: dict = crud.db_update_booking(room_name, id, begin_at, end_at)
+	resource: dict = db.db_update_booking(room_name, id, begin_at, end_at)
 	return resource
 
 async def get_booking(
@@ -104,12 +106,12 @@ async def get_booking(
 		intra, name of the room in which booking is taking place, and 
 		boolean value indicating if it's a staff member or not.
 	"""
-	resource: dict = crud.db_get_booking(room_name, id)
+	resource: dict = db.db_get_booking(room_name, id)
 	return resource
 
 async def get_all_bookings() -> dict:
 	"""
 	NOT SUPPOSED TO BE DEPLOYED! MOSTLY FOR TESTING PURPOSES
 	"""
-	resource: dict = crud.db_get_all_bookings()
+	resource: dict = db.db_get_all_bookings()
 	return resource
