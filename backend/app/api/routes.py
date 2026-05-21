@@ -1,7 +1,8 @@
 from loguru import logger
 from fastapi import APIRouter, status, Path, HTTPException
 from pydantic import ValidationError
-from ..rooms.service import crud
+from uuid import UUID
+# from ..rooms.service import crud
 from ..rooms import service
 from ..models.schemas import BookingRequest, BookingCreation, RoomName
 
@@ -20,13 +21,12 @@ async def root():
 
 @router.get("/api/rooms")
 async def rooms():
-	return crud.db_get_all_bookings()
+	return await service.get_all_bookings()
 
 @router.get("/api/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_200_OK)
 async def booking(
 	room_name: RoomName,
-	pl: BookingRequest,
-	id: str = Path(..., min_length=36, max_length=36)
+	id: UUID
 	) -> dict:
 	"""
 	booking data request
@@ -36,10 +36,8 @@ async def booking(
 	try:
 		response["resource"] = await service.get_booking(room_name, id)
 		response["status"] = status.HTTP_200_OK
-		return 
 	except Exception as err:
-		response["status"] = status.HTTP_400_BAD_REQUEST
-		response["error"] = err
+		raise HTTPException(status_code=404, detail=str(err))
 	return response
 
 @router.post("/api/rooms/{room_name}/bookings", status_code=status.HTTP_201_CREATED)
@@ -72,7 +70,7 @@ async def booking(
 	pl: BookingRequest,
 	# RFC 4122 states that UUIDs are a standard size/length of 36
 	# id: str = Field(..., min_length=16, max_length=128)
-	id: str = Path(..., min_length=36, max_length=36)
+	id: UUID #= Path(..., min_length=36, max_length=36)
 	) -> dict:
 	"""
 	booking patch
@@ -96,7 +94,7 @@ async def booking(
 	room_name: RoomName,
 	# RFC 4122 states that UUIDs are a standard size/length of 36
 	# id: str = Field(..., min_length=16, max_length=128)
-	id: str = Path(..., min_length=36, max_length=36)
+	id: UUID #= Path(..., min_length=36, max_length=36)
 	) -> None:
 	"""
 	booking delete
