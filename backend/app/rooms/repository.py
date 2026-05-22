@@ -95,11 +95,18 @@ class crud:
 				cursor.execute(
 				"""
 				UPDATE bookings
-				SET begin_at = $1, end_at = $2
-				WHERE id = $3 AND room_name = $4
+				SET begin_at = to_timestamp(%s), end_at = to_timestamp(%s)
+				WHERE id = %s AND room_name = %s
 				RETURNING id, intra, room_name, begin_at, end_at, is_staff
-				""", begin_at, end_at, str(id), room_name)
+				""", (begin_at, end_at, str(id), room_name))
+				row = cursor.fetchone()
+				if row is None:
+					raise HTTPException(status_code=404, detail={"Booking not found."})
+				column = [desc[0] for desc in cursor.description]
+				resource = dict(zip(column, row))
 			conn.commit()
+			print("here in repository")
+			return resource
 		finally:
 			get_pool().putconn(conn)
 

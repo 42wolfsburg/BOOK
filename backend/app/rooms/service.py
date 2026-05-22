@@ -69,13 +69,13 @@ async def update_booking(
 
 	:Parameters:
 	------------
-	id: str
+	id: UUID
 		UUID provided during the registration of booking.
 	
-	begin_at: str
+	begin_at: int
 		UNIX timestamp regarding beginning of booking.
 	
-	end_at: str
+	end_at: int
 		UNIX timestamp regarding end of booking.
 
 	:Returns:
