@@ -1,36 +1,16 @@
+from pydantic import BaseModel, Field, model_validator, field_validator
 from typing import Any, Optional
 from time import time
 from enum import Enum
-from pydantic import BaseModel, Field, model_validator, field_validator
 
 unix_hour: float = 3600
 unix_month: float = 2629743
-
-# meeting_rooms = [
-# 	"space",
-# 	"swimming-pool",
-# 	"space-invader",
-# 	"gallery"
-# ]
-
-# FastAPI path parameters have to be scalar: int, str, float, bool, or UUID. Our schema will never work.
-# class RoomName(BaseModel):
-# 	room_name: str = Field(..., min_length=4, max_length=15)
-
-# 	@model_validator(mode="after")
-# 	def validate(self):
-# 		if (self.room_name.strip()).lower() not in meeting_rooms:
-# 			raise ValidationError("room_name invalid name")
 
 class RoomName(str, Enum):
 	space = "space"
 	piscine = "piscine"
 	space_invader = "space-invader"
 	gallery = "gallery"
-
-# Same issue as RoomName. It has to be scalar and over here we are creating it's own type.
-# class Id(BaseModel):
-# 	id: str = Field(..., min_length=16, max_length=128)
 
 class BookingRequest(BaseModel):
 	intra: str
