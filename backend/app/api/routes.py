@@ -2,7 +2,7 @@ from loguru import logger
 from fastapi import APIRouter, status, Path, HTTPException
 from pydantic import ValidationError
 from uuid import UUID
-# from ..rooms.service import crud
+
 from ..rooms import service
 from ..models.schemas import BookingRequest, BookingCreation, RoomName
 
@@ -34,7 +34,10 @@ async def booking(
 	status: default 202, success 200, fail 400
 	"""
 	try:
-		response["resource"] = await service.get_booking(room_name, id)
+		response["resource"] = await service.get_booking(
+			room_name=room_name,
+			id=id
+			)
 		response["status"] = status.HTTP_200_OK
 	except Exception as err:
 		raise HTTPException(status_code=404, detail=str(err))
@@ -66,7 +69,6 @@ async def booking(
 @router.patch("/api/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_201_CREATED)
 async def booking(
 	room_name: RoomName, 
-	# id: Id, 
 	pl: BookingRequest,
 	# RFC 4122 states that UUIDs are a standard size/length of 36
 	# id: str = Field(..., min_length=16, max_length=128)
@@ -84,10 +86,9 @@ async def booking(
 			end_at=pl.end_at,
 			id=id
 			)
-	except ValidationError as err:
-		response["status"] = status.HTTP_400_BAD_REQUEST
-		response["error"] = err
-	return response
+		return response
+	except Exception as err:
+		raise HTTPException(status_code=400, detail=str(err))
 
 @router.delete("/api/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def booking(
@@ -102,7 +103,10 @@ async def booking(
 	status: always 204
 	"""
 	try:
-		response["resource"] = await service.delete_booking(id=id)
+		response["resource"] = await service.delete_booking(
+			room_name=room_name, 
+			id=id
+			)
 	except Exception as err:
 		response["error"] = err
 	return response
