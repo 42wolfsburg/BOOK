@@ -28,7 +28,6 @@ export default function RoomDropdown({ rooms, selectedRoom, setSelectedRoom }) {
           <div className="truncate text-sm font-semibold text-slate-900">
             {current?.name}
           </div>
-          <div className="text-xs text-slate-500">{current?.seats} seats</div>
         </div>
 
         <div className="flex items-center gap-3">
@@ -44,7 +43,50 @@ export default function RoomDropdown({ rooms, selectedRoom, setSelectedRoom }) {
 
       {open && (
         <div className="absolute z-50 mt-2 w-full rounded-2xl border border-gray-100 bg-white shadow-lg ring-1 ring-black/5">
-          <div className="p-4 text-sm text-slate-600">TO DO </div>
+          {/* header */}
+          <div className="flex items-center justify-between px-3 py-2 border-b border-gray-100">
+            <div className="text-sm font-medium text-slate-700">Rooms</div>
+            <button
+              onClick={() => setOpen(false)}
+              aria-label="Close rooms"
+              className="p-1 rounded-md text-slate-400 hover:text-slate-600"
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* room list */}
+          <ul role="listbox" tabIndex={-1} className="max-h-64 overflow-auto divide-y divide-gray-100 p-1">
+            {rooms.length === 0 && <li className="p-3 text-sm text-slate-500">No rooms available</li>}
+
+            {rooms.map((room) => {
+              const active = room.id === selectedRoom;
+              return (
+                <li
+                  key={room.id}
+                  role="option"
+                  aria-selected={active}
+                  onClick={() => {
+                    setSelectedRoom(room.id);
+                    setOpen(false);
+                  }}
+                  tabIndex={0}
+                  className={`flex items-center justify-between gap-3 px-3 py-2 rounded-md cursor-pointer transition ${
+                    active ? "bg-violet-50 ring-1 ring-violet-100" : "hover:bg-gray-50"
+                  }`}
+                >
+                  <div className="min-w-0">
+                    <div className="truncate text-sm font-medium text-slate-900">{room.name}</div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <div className="h-3 w-3 rounded-full" style={{ background: room.accent }} />
+                    {active && <span className="text-xs text-violet-600">Selected</span>}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       )}
     </div>
