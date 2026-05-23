@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import moment from "moment";
 
 import Header from "./components/Header";
-import RoomSelector from "./components/RoomSelector";
+import RoomSelector from "./components/RoomDropdown";
 import CalendarView from "./components/CalendarView";
 import ResponsiveLayout from "./components/ResponsiveLayout";
 import BookingModal from "./components/BookingModal";
