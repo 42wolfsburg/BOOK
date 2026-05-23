@@ -31,9 +31,6 @@ export default function Header() {
         {/* right section */}
         <div className="flex flex-wrap items-center gap-3">
 
-          {/* divider */}
-          <div className="h-6 w-px bg-slate-200" />
-
           {/* user */}
           <div className="flex h-[44px] items-center gap-3 rounded-xl border border-slate-200 bg-white px-3">
             <img
