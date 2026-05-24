@@ -272,8 +272,7 @@ export default function App() {
                 className="h-3 w-3 rounded-full"
                 style={{
                   background:
-                    currentRoom?.accent ||
-                    "#000",
+                    currentRoom?.accent
                 }}
               />
 
