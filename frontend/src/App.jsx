@@ -27,7 +27,7 @@ export default function App() {
     eventsData[selectedRoom]
   );
 
-   // booking popup
+  // booking popup
   const [showModal, setShowModal] =
     useState(false);
 
@@ -56,11 +56,11 @@ export default function App() {
     const newDate =
       calendarView === "week"
         ? moment(currentDate)
-            .subtract(1, "week")
-            .toDate()
+          .subtract(1, "week")
+          .toDate()
         : moment(currentDate)
-            .subtract(1, "day")
-            .toDate();
+          .subtract(1, "day")
+          .toDate();
 
     setCurrentDate(newDate);
   };
@@ -70,11 +70,11 @@ export default function App() {
     const newDate =
       calendarView === "week"
         ? moment(currentDate)
-            .add(1, "week")
-            .toDate()
+          .add(1, "week")
+          .toDate()
         : moment(currentDate)
-            .add(1, "day")
-            .toDate();
+          .add(1, "day")
+          .toDate();
 
     setCurrentDate(newDate);
   };
@@ -161,12 +161,12 @@ export default function App() {
                       <h2 className="text-2xl font-semibold text-slate-900">
                         {calendarView === "week"
                           ? `${moment(
-                              currentDate
-                            )
-                              .startOf("week")
-                              .format(
-                                "MMM DD"
-                              )} – ${moment(
+                            currentDate
+                          )
+                            .startOf("week")
+                            .format(
+                              "MMM DD"
+                            )} – ${moment(
                               currentDate
                             )
                               .endOf("week")
@@ -174,10 +174,10 @@ export default function App() {
                                 "MMM DD, YYYY"
                               )}`
                           : moment(
-                              currentDate
-                            ).format(
-                              "MMMM DD, YYYY"
-                            )}
+                            currentDate
+                          ).format(
+                            "MMMM DD, YYYY"
+                          )}
                       </h2>
 
                       <span className="text-slate-500">
@@ -212,6 +212,15 @@ export default function App() {
                 </div>
               </div>
 
+              {/* room tabs */}
+              <RoomSelector
+                rooms={rooms}
+                selectedRoom={selectedRoom}
+                setSelectedRoom={
+                  setSelectedRoom
+                }
+              />
+
               {/* right side actions */}
               <div className="flex flex-wrap items-center gap-3">
 
@@ -234,7 +243,7 @@ export default function App() {
                   </option>
                 </select>
 
-               {/* quick booking button */}
+                {/* quick booking button */}
                 <button
                   onClick={() => {
                     handleOpenBookingModal(
@@ -254,39 +263,6 @@ export default function App() {
                 >
                   + New Booking
                 </button>
-              </div>
-            </div>
-
-            {/* room tabs */}
-            <RoomSelector
-              rooms={rooms}
-              selectedRoom={selectedRoom}
-              setSelectedRoom={
-                setSelectedRoom
-              }
-            />
-
-            {/* room info */}
-            <div className="mb-4 mt-5 flex items-center gap-3">
-              <div
-                className="h-3 w-3 rounded-full"
-                style={{
-                  background:
-                    currentRoom?.accent
-                }}
-              />
-
-              <div>
-                <h3 className="text-lg font-semibold text-slate-900">
-                  {currentRoom?.name}
-                </h3>
-
-                <p className="text-sm text-slate-500">
-                  {
-                    currentRoom?.seats
-                  }{" "}
-                  seats available
-                </p>
               </div>
             </div>
 
