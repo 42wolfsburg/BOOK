@@ -1,0 +1,44 @@
+services:
+  api:
+    build:
+      context: ./backend
+    ports:
+      - "9000:9000"
+    env_file:
+      - ".env"
+    environment:
+      - PORT=${BACKEND_PORT}
+      - HOST=${BACKEND_HOST}
+      - DATABASE_URL=${DATABASE_URL}
+      - UV_LINK_MODE=copy
+    depends_on:
+      - postgres
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=${VITE_API_URL}
+    depends_on:
+      - api
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+  postgres:
+    image: postgres:17.6
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
