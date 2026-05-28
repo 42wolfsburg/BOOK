@@ -15,6 +15,7 @@ class Settings(BaseSettings):
 	BACKEND_HOST: str
 	BACKEND_PORT: int
 	DATABASE_URL: str
+	VITE_API_URL: str
 	VITE_42_SECRET: str
 	VITE_42_CLIENT_ID: str
 	VITE_42_REDIRECT_URI: str
