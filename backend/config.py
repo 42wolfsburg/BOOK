@@ -15,9 +15,9 @@ class Settings(BaseSettings):
 	BACKEND_HOST: str
 	BACKEND_PORT: int
 	DATABASE_URL: str
+	VITE_42_SECRET: str
+	VITE_42_CLIENT_ID: str
+	VITE_42_REDIRECT_URI: str
 	model_config = ConfigDict(env_file=".env")
-
-    # class Config:
-    #     env_file = ".env" # this class has been deprecated https://stackoverflow.com/questions/78031241/pydantic-userwarning-valid-config-keys-have-changed-in-v2
 
 settings = Settings()
