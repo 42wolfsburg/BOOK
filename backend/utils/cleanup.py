@@ -9,7 +9,7 @@ def delete_past_bookings():
 		user=settings.POSTGRES_USER,
 		password=settings.POSTGRES_PASSWORD
 	)
-	with conn.cursor as cur:
-		cur.execute("DELETE FROM bookings WHERE end_time < %s", (datetime.now(),))
+	with conn.cursor() as cur:
+		cur.execute("DELETE FROM bookings WHERE end_at < %s", (datetime.now(),))
 	conn.commit()
 
