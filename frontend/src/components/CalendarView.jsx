@@ -7,7 +7,7 @@ import {
 
 import moment from "moment";
 
-import BookingCard from "./BookingCards";
+//import BookingCard from "./BookingCards";
 import CalendarToolbar from "./CalendarToolbar";
 
 const localizer = momentLocalizer(moment);
@@ -92,7 +92,7 @@ export default function CalendarView({
         toolbar={true}
         components={{
           toolbar: CalendarToolbar,
-          event: BookingCard,
+          //event: BookingCard,
         }}
 
         // disable invalid slots
