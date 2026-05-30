@@ -3,7 +3,6 @@ import useCalendar from "./hooks/useCalendar";
 import useBookings from "./hooks/useBookings";
 import moment from "moment";
 import Header from "./components/Header";
-import RoomSelector from "./components/RoomDropdown";
 import CalendarView from "./components/CalendarView";
 import ResponsiveLayout from "./components/ResponsiveLayout";
 import BookingModal from "./components/BookingModal";
@@ -59,10 +58,6 @@ export default function App() {
               dateInputRef={dateInputRef}
               setCurrentDate={setCurrentDate}
               onOpenQuickBooking={openBookingModal}
-            />
-
-            {/* room tabs */}
-            <RoomSelector
               rooms={rooms}
               selectedRoom={selectedRoom}
               setSelectedRoom={setSelectedRoom}

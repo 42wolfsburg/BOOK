@@ -8,6 +8,7 @@ import {
 import moment from "moment";
 
 import BookingCard from "./BookingCards";
+import CalendarToolbar from "./CalendarToolbar";
 
 const localizer = momentLocalizer(moment);
 
@@ -85,10 +86,12 @@ export default function CalendarView({
         onNavigate={setCurrentDate}
         view={calendarView}
         onView={setCalendarView}
+        views={["week", "day"]}
         style={{ height: "78vh" }}
         popup
-        toolbar={false}
+        toolbar={true}
         components={{
+          toolbar: CalendarToolbar,
           event: BookingCard,
         }}
 
