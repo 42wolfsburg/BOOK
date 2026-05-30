@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import useCalendar from "./hooks/useCalendar";
+import useBookings from "./hooks/useBookings";
 import moment from "moment";
 import Header from "./components/Header";
 import RoomSelector from "./components/RoomDropdown";
@@ -26,38 +27,19 @@ export default function App() {
     goToNext,
   } = useCalendar();
 
-  // events for selected room
-  const [events, setEvents] = useState(eventsData[selectedRoom]);
-
-  // booking popup
-  const [showModal, setShowModal] = useState(false);
-
-  // TODO: connect when backend ready
-  const [bookingData, setBookingData] = useState(null);
+  // bookings state
+  const {
+    events,
+    setEvents,
+    showModal,
+    setShowModal,
+    bookingData,
+    setBookingData,
+    openBookingModal,
+    saveBooking,
+  } = useBookings(selectedRoom, eventsData);
 
   const currentRoom = rooms.find((room) => room.id === selectedRoom) || rooms[0];
-
-  useEffect(() => {
-    setEvents(eventsData[selectedRoom]);
-  }, [selectedRoom]);
-
-  // open modal
-  const handleOpenBookingModal = (slot) => {
-    setBookingData({
-      start: slot.start,
-      end: slot.end,
-    });
-
-    setShowModal(true);
-  };
-
-  const handleSaveBooking = () => {
-    if (!bookingData) return;
-
-    setEvents((prev) => [...prev, bookingData]);
-
-    setShowModal(false);
-  };
 
   return (
     <div className="min-h-screen bg-[#f5f7fb] p-3 md:p-5 lg:p-8">
@@ -76,7 +58,7 @@ export default function App() {
               goToNext={goToNext}
               dateInputRef={dateInputRef}
               setCurrentDate={setCurrentDate}
-              onOpenQuickBooking={handleOpenBookingModal}
+              onOpenQuickBooking={openBookingModal}
             />
 
             {/* room tabs */}
@@ -93,7 +75,7 @@ export default function App() {
               setCurrentDate={setCurrentDate}
               calendarView={calendarView}
               setCalendarView={setCalendarView}
-              onOpenBookingModal={handleOpenBookingModal}
+              onOpenBookingModal={openBookingModal}
             />
           </ResponsiveLayout>
         </div>
@@ -104,7 +86,7 @@ export default function App() {
           onClose={() => setShowModal(false)}
           bookingData={bookingData}
           setBookingData={setBookingData}
-          onSave={handleSaveBooking}
+          onSave={saveBooking}
         />
       </div>
     </div>
