@@ -8,7 +8,7 @@ from utils.cleanup import delete_past_bookings
 
 # Scheduler responsible for clearing old bookings that have passed
 scheduler = BackgroundScheduler()
-scheduler.add_job(delete_past_bookings, 'interval', hours=3)
+scheduler.add_job(delete_past_bookings, 'interval', minutes=3)
 scheduler.start()
 
 @asynccontextmanager
