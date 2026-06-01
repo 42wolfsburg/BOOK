@@ -1,13 +1,23 @@
+import secrets
+import httpx
+from urllib.parse import urlencode
 from loguru import logger
-from fastapi import APIRouter, status, Path, HTTPException
+from fastapi import APIRouter, status, Path, HTTPException, Request
+from fastapi.responses import RedirectResponse
+from datetime import datetime, timedelta, timezone
 from pydantic import ValidationError
 from uuid import UUID
 
 from ..rooms import service
+from config import settings
 from ..models.schemas import BookingRequest, BookingCreation, RoomName
 
 router = APIRouter()
 response = {}
+
+FT_AUTH_URL  = "https://api.intra.42.fr/oauth/authorize"
+FT_TOKEN_URL = "https://api.intra.42.fr/oauth/token"
+FT_USER_URL  = "https://api.intra.42.fr/v2/me"
 
 @router.get("/", status_code=status.HTTP_200_OK)
 async def root():
@@ -18,6 +28,84 @@ async def root():
 		"Author": "42Wolfsburg",
 		"status": "development"
 	})
+
+@router.get("/auth/login", status_code=302) #redirect HTTP code
+async def login():
+	state = secrets.token_urlsafe(32)
+
+	auth_url = FT_AUTH_URL + "?" + urlencode({
+		"client_id":		settings.CLIENT_ID,
+		"redirect_uri":		settings.REDIRECT_URI,
+		"response_type":	"code",
+		"scope":			"public",
+		"state":			state
+	})
+
+	response = RedirectResponse(url=auth_url, status_code=302)
+	response.set_cookie(
+		key="oauth_state",
+		value=state,
+		httponly=True,
+		secure=False, #Change in prod
+		samesite="lax",
+		max_age=500
+	)
+
+	return response
+
+@router.get("/auth/callback", status_code=302) #redirect HTTP code
+async def callback(request: Request, code: str, state: str):
+	stored_state = request.cookies.get("oauth_state")
+	if not stored_state or stored_state != state:
+		raise HTTPException(status_code=400, detail="Invalid code")
+	
+	async with httpx.AsyncClient() as client:
+		token_res = await client.post(FT_TOKEN_URL, data={
+			"grant_type":		"authorization_code",
+			"client_id":		settings.CLIENT_ID,
+			"client_secret":	settings.SECRET,
+			"code":				code,
+			"redirect_uri":		settings.REDIRECT_URI,
+		})
+	
+	if token_res.status_code != 200:
+		raise HTTPException(status_code=400, detail="Failed to exchange code")
+	
+	ft_access_token = token_res.json()["access_token"]
+
+	async with httpx.AsyncClient() as client:
+		user_res = await client.get(
+			FT_USER_URL,
+			headers={"Authorization": f"Bearer {ft_access_token}"}
+		)
+
+	if user_res.status_code != 200:
+		raise HTTPException(status_code=400, detail="Failed to fetch user")
+	
+	user = user_res.json()
+
+	session_token = jwt.encode(
+		payload={
+			"sub":		str(user["id"]),
+			"login":	user["login"],
+			"exp":		datetime.now(timezone.utc) + timedelta(days=7)
+		},
+		key=JWT_SECRET,
+		algorithm="HS256"
+	)
+	
+	response = RedirectResponse(url=settings.VITE_API_URL, status_code=302)
+	response.set_cookie(
+		key="session",
+		value=session_token,
+		httponly=True,
+		secure=False, # Change in prod
+		samesite="lax",
+		max_age=60*60*24*7
+	)
+	response.delete_cookie("oauth_state")
+
+	return response
 
 @router.get("/api/rooms")
 async def rooms():
@@ -38,7 +126,19 @@ async def booking(
 			room_name=room_name,
 			id=id
 			)
-		response["status"] = status.HTTP_200_OK
+	except Exception as err:
+		raise HTTPException(status_code=404, detail=str(err))
+	return response
+
+@router.get("/api/rooms/{room_name}/bookings", status_code=status.HTTP_200_OK)
+async def booking(room_name: RoomName) -> dict:
+	"""
+	booking data request
+
+	status: default 202, success 200, fail 400
+	"""
+	try:
+		response["resource"] = await service.get_booking_per_room(room_name=room_name)
 	except Exception as err:
 		raise HTTPException(status_code=404, detail=str(err))
 	return response
