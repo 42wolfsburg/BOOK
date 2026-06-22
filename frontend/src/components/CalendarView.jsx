@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import {
   Calendar,
@@ -7,7 +7,8 @@ import {
 
 import moment from "moment";
 
-import BookingCard from "./BookingCards";
+//import BookingCard from "./BookingCards";
+import CalendarToolbar from "./CalendarToolbar";
 
 const localizer = momentLocalizer(moment);
 
@@ -21,6 +22,25 @@ export default function CalendarView({
 }) {
   const [selectedSlot, setSelectedSlot] =
     useState(null);
+
+  const [width, setWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1200
+  );
+  useEffect(() => {
+    const onResize = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  const isMobile = width < 480;
+
+  const formats = {
+    dayFormat: (date, culture, loc) =>
+      isMobile ? loc.format(date, "ddd", culture) : loc.format(date, "D ddd", culture),
+    dayHeaderFormat: (date, culture, loc) =>
+      isMobile ? loc.format(date, "ddd", culture) : loc.format(date, "D ddd", culture),
+    weekdayFormat: (date, culture, loc) => loc.format(date, "ddd", culture),
+  };
 
   // time logic
   function isPast(date) {
@@ -85,12 +105,15 @@ export default function CalendarView({
         onNavigate={setCurrentDate}
         view={calendarView}
         onView={setCalendarView}
+        views={["week", "day"]}
         style={{ height: "78vh" }}
         popup
-        toolbar={false}
+        toolbar={true}
         components={{
-          event: BookingCard,
+          toolbar: CalendarToolbar,
+          //event: BookingCard,
         }}
+        formats={formats}
 
         // disable invalid slots
         onSelecting={(range) => {
