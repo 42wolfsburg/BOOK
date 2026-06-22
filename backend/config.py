@@ -1,8 +1,3 @@
-# .env          → stores the raw values (passwords, credentials)
-# config.py     → reads .env and makes them available in Python
-# database.py   → imports config.py to get database credentials
-# Stop using AI to generate your stuff
-
 from pydantic_settings import BaseSettings
 from pydantic import ConfigDict
 
@@ -15,9 +10,13 @@ class Settings(BaseSettings):
 	BACKEND_HOST: str
 	BACKEND_PORT: int
 	DATABASE_URL: str
-	model_config = ConfigDict(env_file=".env")
+	JWT_SECRET: str
+	REDIRECT_URI: str
+	CLIENT_ID: str
+	SECRET: str
 
-    # class Config:
-    #     env_file = ".env" # this class has been deprecated https://stackoverflow.com/questions/78031241/pydantic-userwarning-valid-config-keys-have-changed-in-v2
+	VITE_API_URL: str
+
+	model_config = ConfigDict(env_file=".env")
 
 settings = Settings()

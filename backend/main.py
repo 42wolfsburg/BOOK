@@ -3,6 +3,13 @@ from loguru import logger
 from contextlib import asynccontextmanager
 from app.api.routes import router
 from app.database.init import init_db, close_db
+from apscheduler.schedulers.background import BackgroundScheduler
+from utils.cleanup import delete_past_bookings
+
+# Scheduler responsible for clearing old bookings that have passed
+scheduler = BackgroundScheduler()
+scheduler.add_job(delete_past_bookings, 'interval', minutes=3)
+scheduler.start()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> None:

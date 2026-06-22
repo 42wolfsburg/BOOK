@@ -110,6 +110,27 @@ async def get_booking(
 	resource: dict = db.db_get_booking(room_name, id)
 	return resource
 
+async def get_booking_per_room(room_name: str) -> dict:
+	"""
+	Function responsible for returning specific booking according to a correct ID
+	provided during registration of the same.
+
+	:Parameters:
+	------------
+	id: str
+		UUID provided during the registration of booking.
+
+	:Returns:
+	---------
+	resource: dict
+		Resource following API REST architectural standards for GET.
+		Contains all information about the booking: starting and end time,
+		intra, name of the room in which booking is taking place, and 
+		boolean value indicating if it's a staff member or not.
+	"""
+	resource: dict = db.db_get_booking_per_room(room_name)
+	return resource
+
 async def get_all_bookings() -> dict:
 	"""
 	NOT SUPPOSED TO BE DEPLOYED! MOSTLY FOR TESTING PURPOSES
