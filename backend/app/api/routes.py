@@ -29,6 +29,11 @@ async def root():
 		"status": "development"
 	})
 
+
+@router.get("/auth/me", status_code=200) #Check already authenticated user
+async def me():
+	return
+
 @router.get("/auth/login", status_code=302) #redirect HTTP code
 async def login():
 	state = secrets.token_urlsafe(32)
