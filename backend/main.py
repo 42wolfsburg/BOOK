@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, CORSMiddleware
 from loguru import logger
 from contextlib import asynccontextmanager
 from app.api.routes import router

@@ -1,44 +1,7 @@
 import logo from "../assets/logo.png";
 
 export default function Landing() {
-    const handleLogin = async () => {
-        const clientId = import.meta.env.VITE_42_CLIENT_ID;
-        const redirectUri = import.meta.env.VITE_42_REDIRECT_URI;
-
-        if (!clientId || !redirectUri) {
-            alert("OAuth configuration missing. Contact the administrator.");
-            return;
-        }
-
-        function generateState() {
-            if (typeof crypto?.randomUUID === "function") {
-                try {
-                    return crypto.randomUUID();
-                } catch (_) {}
-            }
-            const arr = new Uint8Array(16);
-            crypto.getRandomValues(arr);
-            return Array.from(arr).map(b => b.toString(16).padStart(2, "0")).join("");
-        }
-
-        try {
-            const state = generateState();
-            sessionStorage.setItem("oauth_state", state);
-
-            const authUrl =
-                `https://api.intra.42.fr/oauth/authorize` +
-                `?client_id=${encodeURIComponent(clientId)}` +
-                `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-                `&response_type=code` +
-                `&scope=public` +
-                `&state=${encodeURIComponent(state)}`;
-
-            window.location.replace(authUrl);
-        } catch (e) {
-            console.error("Failed to initiate auth", e);
-            alert("Unable to start authentication. Try again.");
-        }
-    };
+    const handleLogin = () => { window.location.href = import.meta.env.VITE_API_URL + "/auth/login" };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#d0d5dd] text-[#0f1724] font-sans">
