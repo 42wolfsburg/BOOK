@@ -78,6 +78,8 @@ async def callback(request: Request, code: str, state: str):
 		})
 	
 	if token_res.status_code != 200:
+		print(token_res.status_code)
+		print(token_res.text)
 		raise HTTPException(status_code=400, detail="Failed to exchange code")
 	
 	ft_access_token = token_res.json()["access_token"]
@@ -103,7 +105,7 @@ async def callback(request: Request, code: str, state: str):
 		algorithm="HS256"
 	)
 	
-	response = RedirectResponse(url=settings.VITE_API_URL, status_code=302)
+	response = RedirectResponse(url=settings.FRONTEND_URL, status_code=302)
 	response.set_cookie(
 		key="session",
 		value=session_token,
