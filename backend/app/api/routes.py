@@ -1,12 +1,13 @@
 import secrets
 import httpx
+import jwt
+from uuid import UUID
+from typing import Annotated
 from urllib.parse import urlencode
 from loguru import logger
-from fastapi import APIRouter, status, Path, HTTPException, Request
+from fastapi import APIRouter, status, HTTPException, Request, Cookie
 from fastapi.responses import RedirectResponse
 from datetime import datetime, timedelta, timezone
-from pydantic import ValidationError
-from uuid import UUID
 
 from ..rooms import service
 from config import settings
@@ -30,9 +31,12 @@ async def root():
 	})
 
 
-@router.get("/auth/me", status_code=200) #Check already authenticated user
-async def me():
-	return
+@router.get("/auth/me", status_code=200) #check already authenticated user
+async def me(jwt_token: Annotated[str | None, Cookie()] = None):
+	if jwt_token is None:
+		raise HTTPException(status_code=401)
+	parsed_token = jwt.decode(jwt_token)
+	return parsed_token
 
 @router.get("/auth/login", status_code=302) #redirect HTTP code
 async def login():
@@ -95,7 +99,7 @@ async def callback(request: Request, code: str, state: str):
 			"login":	user["login"],
 			"exp":		datetime.now(timezone.utc) + timedelta(days=7)
 		},
-		key=JWT_SECRET,
+		key=settings.JWT_SECRET,
 		algorithm="HS256"
 	)
 	
