@@ -32,11 +32,15 @@ async def root():
 
 
 @router.get("/auth/me", status_code=200) #check already authenticated user
-async def me(jwt_token: Annotated[str | None, Cookie()] = None):
-	if jwt_token is None:
-		raise HTTPException(status_code=401)
-	parsed_token = jwt.decode(jwt_token)
-	return parsed_token
+async def me(session: Annotated[str | None, Cookie()] = None):
+	try:
+		jwt.decode(session, key=settings.JWT_SECRET, algorithms=["HS256"])
+	except jwt.ExpiredSignatureError as e:
+		logger.error(f'ERROR: Expired signature in token {e}')
+		raise HTTPException(status_code=401, detail=str(e))
+	except jwt.InvalidTokenError as e:
+		logger.error(f'ERROR: Invalid token {e}')
+		raise HTTPException(status_code=401, detail=str(e))
 
 @router.get("/auth/login", status_code=302) #redirect HTTP code
 async def login():
@@ -78,8 +82,6 @@ async def callback(request: Request, code: str, state: str):
 		})
 	
 	if token_res.status_code != 200:
-		print(token_res.status_code)
-		print(token_res.text)
 		raise HTTPException(status_code=400, detail="Failed to exchange code")
 	
 	ft_access_token = token_res.json()["access_token"]
