@@ -30,11 +30,11 @@ async def root():
 		"status": "development"
 	})
 
-
 @router.get("/auth/me", status_code=200) #check already authenticated user
 async def me(session: Annotated[str | None, Cookie()] = None):
 	try:
-		jwt.decode(session, key=settings.JWT_SECRET, algorithms=["HS256"])
+		payload = jwt.decode(session, key=settings.JWT_SECRET, algorithms=["HS256"])
+		return {"login": payload["login"]}
 	except jwt.ExpiredSignatureError as e:
 		logger.error(f'ERROR: Expired signature in token {e}')
 		raise HTTPException(status_code=401, detail=str(e))
@@ -59,7 +59,7 @@ async def login():
 		key="oauth_state",
 		value=state,
 		httponly=True,
-		secure=False, #Change in prod
+		secure=False, # change in prod
 		samesite="lax",
 		max_age=500
 	)
@@ -106,18 +106,16 @@ async def callback(request: Request, code: str, state: str):
 		key=settings.JWT_SECRET,
 		algorithm="HS256"
 	)
-	
 	response = RedirectResponse(url=settings.FRONTEND_URL, status_code=302)
 	response.set_cookie(
 		key="session",
 		value=session_token,
 		httponly=True,
-		secure=False, # Change in prod
+		secure=False, # change in prod
 		samesite="lax",
 		max_age=60*60*24*7
 	)
 	response.delete_cookie("oauth_state")
-
 	return response
 
 @router.get("/api/rooms")
