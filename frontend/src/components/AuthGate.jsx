@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext, useContext } from "react";
 import { Navigate } from "react-router-dom";
 
-export default function AuthGate({children}) {
+export const AuthContext = createContext(null)
 
-    const [loggedIn, setLoggedIn] = useState(null);
+export default function AuthGate({children}) {
+    const [loggedIn, setLoggedIn] = useState(null)
+    const [login, setLogin] = useState(null)
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -11,17 +13,28 @@ export default function AuthGate({children}) {
                 const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
                     credentials: "include",
                 });
-                setLoggedIn(res.ok);
+
+                if (res.ok) {
+                    const data = await res.json()
+                    setLogin(data.login)
+                    setLoggedIn(true)
+                } else {
+                    setLoggedIn(false)
+                }
             } catch (e) {
                 console.error("Auth check failed", e);
-                setLoggedIn(false);
+                setLoggedIn(false)
             }
         };
 
-        checkAuth();
-    }, []);
+        checkAuth()
+    }, [])
 
-    if (loggedIn === null) return null;
-    if (loggedIn === false) return <Navigate to="/login" replace />;
-    return children;
+    if (loggedIn === null) return null
+    if (loggedIn === false) return <Navigate to="/login" replace />
+    return (
+        <AuthContext.Provider value={login}>
+            {children}
+        </AuthContext.Provider>
+    )
 }
