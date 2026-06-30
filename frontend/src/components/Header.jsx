@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import logo from "../assets/logo.png";
+import { AuthContext } from "./AuthGate"
 
 export default function Header() {
   return (
@@ -38,7 +39,7 @@ export default function Header() {
             />
 
             <p className="block text-xs sm:text-sm font-medium text-slate-800 max-w-[60px] sm:max-w-[80px] truncate">
-              spenev
+              {login && <span>{login}</span>}
             </p>
           </div>
 
