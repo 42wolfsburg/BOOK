@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
 import logo from "../assets/logo.png";
+import { useContext } from 'react'
 import { AuthContext } from "./AuthGate"
 
 export default function Header() {
+  const login = useContext(AuthContext)
   return (
     <motion.div
       initial={{ opacity: 0, y: 18 }}
