@@ -11,7 +11,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Landing />} />
-	<Route path="/*" element={<AuthGate><App /></AuthGate>} />
+	      <Route path="/*" element={<AuthGate><App /></AuthGate>} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
