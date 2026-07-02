@@ -5,7 +5,7 @@ from uuid import UUID
 from typing import Annotated
 from urllib.parse import urlencode
 from loguru import logger
-from fastapi import APIRouter, status, HTTPException, Request, Cookie
+from fastapi import APIRouter, status, HTTPException, Request, Response, Cookie
 from fastapi.responses import RedirectResponse
 from datetime import datetime, timedelta, timezone
 
@@ -65,6 +65,15 @@ async def login():
 	)
 
 	return response
+
+@router.get("/auth/logout", status_code=200)
+async def logout(response: Response):
+	response.delete_cookie(
+		key="session",
+		httponly=True,
+		samesite="lax"
+	)
+	return {"message": "logged out"}
 
 @router.get("/auth/callback", status_code=302) #redirect HTTP code
 async def callback(request: Request, code: str, state: str):
