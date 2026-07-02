@@ -1,10 +1,26 @@
 import { motion } from "framer-motion";
 import logo from "../assets/logo.png";
 import { useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { AuthContext } from "./AuthGate"
 
 export default function Header() {
   const login = useContext(AuthContext)
+  const nav = useNavigate()
+
+  const handleLogout = async () => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/logout`, {
+        credentials: "include",
+      });
+      if (res.ok){
+        nav("/login", { replace: true })
+      }
+    } catch (e) {
+      console.error("Logout failure", e)
+    }
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 18 }}
@@ -46,7 +62,10 @@ export default function Header() {
           </div>
 
           {/* Logout */}
-          <button className="h-9 sm:h-10 md:h-[44px] px-2 sm:px-3 md:px-5 text-xs sm:text-sm font-medium text-red-600 bg-red-50 border border-red-100 rounded-xl hover:bg-red-100 whitespace-nowrap">
+          <button 
+            onClick={handleLogout}
+            className="h-9 sm:h-10 md:h-[44px] px-2 sm:px-3 md:px-5 text-xs sm:text-sm font-medium text-red-600 bg-red-50 border border-red-100 rounded-xl hover:bg-red-100 whitespace-nowrap"
+          >
             Logout
           </button>
 
