@@ -35,3 +35,73 @@ export const rooms = [
     accent: "#F97316",
   },
 ];
+
+export const eventsData = {
+  1: [
+    {
+      title: "Client Call",
+      start: new Date(2025, 4, 12, 10, 0),
+      end: new Date(2025, 4, 12, 11, 0),
+    },
+  ],
+
+  2: [
+    {
+      title: "Product Sync",
+      start: new Date(2025, 4, 13, 11, 0),
+      end: new Date(2025, 4, 13, 12, 30),
+    },
+  ],
+
+  3: [
+    {
+      title: "Weekly Team Sync",
+      start: new Date(2025, 4, 12, 9, 0),
+      end: new Date(2025, 4, 12, 10, 30),
+    },
+
+    {
+      title: "Client Presentation",
+      start: new Date(2025, 4, 12, 11, 0),
+      end: new Date(2025, 4, 12, 12, 30),
+    },
+
+    {
+      title: "Design Thinking",
+      start: new Date(2025, 4, 14, 9, 30),
+      end: new Date(2025, 4, 14, 11, 0),
+    },
+
+    {
+      title: "Workshop: Ideation",
+      start: new Date(2025, 4, 14, 12, 0),
+      end: new Date(2025, 4, 14, 14, 0),
+    },
+
+    {
+      title: "Interview",
+      start: new Date(2025, 4, 16, 10, 0),
+      end: new Date(2025, 4, 16, 11, 0),
+    },
+
+    {
+      title: "Sprint Planning",
+      start: new Date(2025, 4, 16, 16, 0),
+      end: new Date(2025, 4, 16, 17, 30),
+    },
+
+    {
+      title: "Stakeholder Review",
+      start: new Date(2025, 4, 12, 16, 0),
+      end: new Date(2025, 4, 12, 17, 0),
+    },
+  ],
+
+  4: [
+    {
+      title: "Creative Review",
+      start: new Date(2025, 4, 15, 13, 0),
+      end: new Date(2025, 4, 15, 14, 0),
+    },
+  ],
+};
