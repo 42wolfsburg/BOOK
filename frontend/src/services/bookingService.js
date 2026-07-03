@@ -37,13 +37,18 @@ export const getBookings = async (room_name) => {
     return response
 }
 
-export const postBookings = async (room_name) => {
+export const postBookings = async ({
+    room_name,
+    intra,
+    begin_at,
+    end_at
+    }) => {
     let response;
     
     try {
         response = await apiRequest(`/api/rooms/${room_name}/bookings`, {
             method: "POST",
-            body: '',
+            body:   JSON.stringify({ intra, begin_at, end_at })
         });
     } catch (e) {
         throw e;
@@ -51,12 +56,19 @@ export const postBookings = async (room_name) => {
     return response
 }
 
-export const patchBookingById = async ({room_name, id}) => {
+export const patchBookingById = async ({
+    room_name,
+    id,
+    intra,
+    begin_at,
+    end_at
+    }) => {
     let response;
+
     try {
         response = await apiRequest(`/api/rooms/${room_name}/bookings/${id}`, {
             method: "PATCH",
-            body: '',
+            body: JSON.stringify({intra, begin_at, end_at}),
         });
     } catch (e) {
         throw e;
@@ -69,11 +81,10 @@ export const deleteBookingById = async ({room_name, id}) => {
     
     try {
         response = await apiRequest(`/api/rooms/${room_name}/bookings/${id}`, {
-            method: "DELETE"
+            method: "DELETE",
         });
     } catch (e) {
         throw e;
     }
     return response
 }
-
