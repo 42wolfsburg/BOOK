@@ -80,7 +80,7 @@ class crud:
 				FROM bookings
 				WHERE room_name = %s
 				""", (room_name,))
-				row = cursor.fetchone()
+				row = cursor.fetchall()
 				if row is None:
 					raise HTTPException(status_code=404, detail={"Booking not found."})
 				column = [desc[0] for desc in cursor.description]
