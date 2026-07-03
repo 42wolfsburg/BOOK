@@ -14,7 +14,7 @@ export const apiRequest = async (endpoint, options = {}) => {
     try {
         response = await fetch(`${API_URL}${endpoint}`, {
             ...options,
-            headers = {
+            headers: {
                 'Content-type': 'application/json',
                 ...(options.headers || {})
             },
@@ -26,7 +26,7 @@ export const apiRequest = async (endpoint, options = {}) => {
 
     const contentType = response.headers.get('content-type');
 
-    const data = contentType && contentType.includes('content-type')
+    const data = contentType && contentType.includes('application/json')
         ? await response.json()
         : await response.text();
 
