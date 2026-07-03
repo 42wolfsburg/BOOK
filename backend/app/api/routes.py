@@ -191,8 +191,6 @@ async def booking(
 	except Exception as err:
 		raise HTTPException(status_code=400, detail=str(err))
 
-
-#TODO include payload in call
 @router.patch("/api/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_201_CREATED)
 async def booking(
 	room_name: RoomName, 
