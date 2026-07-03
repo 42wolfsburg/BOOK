@@ -7,7 +7,7 @@ unix_hour: float = 3600
 unix_month: float = 2629743
 
 class RoomName(str, Enum):
-	space = "space"
+	galaxy = "galaxy"
 	piscine = "piscine"
 	space_invader = "space-invader"
 	gallery = "gallery"
