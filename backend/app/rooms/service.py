@@ -41,10 +41,7 @@ async def register_booking(
 
 	return resource
 
-async def delete_booking(
-	room_name:str, 
-	id: UUID
-	) -> None:
+async def delete_booking(id: UUID) -> None:
 	"""
 	Function responsible for deletion of bookings. According to REST architecture
 	we should not return anything, as the action itself is a result of deletion of
@@ -56,7 +53,7 @@ async def delete_booking(
 	id: str
 		UUID provideed during the registration of booking.
 	"""
-	db.db_delete_booking(room_name, id)
+	db.db_delete_booking(id)
 
 async def update_booking(
 	room_name: str,

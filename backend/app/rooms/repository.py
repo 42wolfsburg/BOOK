@@ -172,7 +172,7 @@ class crud:
 		self,
 		room_name: str,
 		id: UUID
-		) -> dict:
+		) -> list:
 		"""
 		"""
 		logger.info(f"GET called for id: {id}")
