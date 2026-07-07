@@ -66,9 +66,9 @@ export default function BookingModal({
                   onChange={(e) =>
                     setBookingData({
                       ...bookingData,
-                      start: new Date(
-                        e.target.value
-                      ),
+                      start: Math.floor(new Date(
+                        e.target.value / 1000
+                      )),
                     })
                   }
                   className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-violet-300"

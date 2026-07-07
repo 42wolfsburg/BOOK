@@ -36,7 +36,7 @@ async def me(session: Annotated[str | None, Cookie()] = None):
 		payload = jwt.decode(session, key=settings.JWT_SECRET, algorithms=["HS256"])
 		return {
 			"login": payload["login"],
-			# "is_staff": payload["is_staff"]
+			"is_staff": payload["is_staff"]
 		  }
 	except jwt.ExpiredSignatureError as e:
 		logger.error(f'ERROR: Expired signature in token {e}')

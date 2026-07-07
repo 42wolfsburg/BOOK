@@ -56,7 +56,7 @@ class crud:
 	def db_get_booking_per_room(
 		self,
 		room_name: str
-		) -> dict:
+		) -> list:
 		"""
 		CRUD operation for getting booking resource from specific meeting rooms.
 
@@ -80,11 +80,10 @@ class crud:
 				FROM bookings
 				WHERE room_name = %s
 				""", (room_name,))
-				row = cursor.fetchall()
-				if row is None:
-					raise HTTPException(status_code=404, detail={"Booking not found."})
+				rows = cursor.fetchall()
 				column = [desc[0] for desc in cursor.description]
-				resource = dict(zip(column, row))
+				resource = [dict(zip(column, r)) for r in rows]
+				# resource = dict(zip(column, row))
 			return resource
 		finally:
 			get_pool().putconn(conn)
