@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../components/AuthGate'
-import { getBookings, postBookings } from '../services/bookingService'
+import { getBookings, postBookings, deleteBookingById } from '../services/bookingService'
 
 export default function useBookings(currentRoom) {
   const [events, setEvents] = useState([]);
@@ -13,6 +13,7 @@ export default function useBookings(currentRoom) {
       const { resource } = await getBookings(currentRoom.slug);
       setEvents(
         resource.map((b) => ({
+          id: b.id,
           title: `${b.intra}`,
           start: new Date(b.begin_at),
           end: new Date(b.end_at),
@@ -37,17 +38,22 @@ export default function useBookings(currentRoom) {
       end_at: Math.floor(bookingData.end.getTime() / 1000),
     };
 
-    const response = await postBookings(payload)
+    const { resource } = await postBookings(payload)
 
     setEvents((prev) => [
       ...prev, 
-      { title: `${login}`, start: bookingData.start, end: bookingData.end }
+      {
+        id: resource.id, 
+        title: `${login}`, 
+        start: bookingData.start, 
+        end: bookingData.end 
+      }
     ]);
     setShowModal(false);
   };
 
   const deleteBooking = async (event) => {
-    await deletebookingById({ room_name: currentRoom.slug, id: event.id });
+    await deleteBookingById({ room_name: currentRoom.slug, id: event.id });
     setEvents((prev) => prev.filter((e) => e.id !== event.id));
   }
 
