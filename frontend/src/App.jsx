@@ -38,6 +38,7 @@ export default function App() {
     setBookingData,
     openBookingModal,
     saveBooking,
+    deleteBooking,
   } = useBookings(currentRoom);
 
   return (
@@ -71,6 +72,7 @@ export default function App() {
               calendarView={calendarView}
               setCalendarView={setCalendarView}
               onOpenBookingModal={openBookingModal}
+              onDeleteBooking={deleteBooking}
             />
           </ResponsiveLayout>
         </div>
