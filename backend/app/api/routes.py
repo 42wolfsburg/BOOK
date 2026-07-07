@@ -138,9 +138,9 @@ async def callback(request: Request, code: str, state: str):
 			status_code=302
 		)
 
-@router.get("/api/rooms")
-async def rooms():
-	return await service.get_all_bookings()
+# @router.get("/api/rooms")
+# async def rooms():
+# 	return await service.get_all_bookings()
 
 @router.get("/api/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_200_OK)
 async def booking(
@@ -153,13 +153,13 @@ async def booking(
 	status: default 202, success 200, fail 400
 	"""
 	try:
-		response["resource"] = await service.get_booking(
+		resource = await service.get_booking(
 			room_name=room_name,
 			id=id
 			)
+		return {"resource": resource}
 	except Exception as err:
 		raise HTTPException(status_code=404, detail=str(err))
-	return response
 
 @router.get("/api/rooms/{room_name}/bookings", status_code=status.HTTP_200_OK)
 async def booking(room_name: RoomName) -> dict:
@@ -169,10 +169,10 @@ async def booking(room_name: RoomName) -> dict:
 	status: default 202, success 200, fail 400
 	"""
 	try:
-		response["resource"] = await service.get_booking_per_room(room_name=room_name)
+		resource = await service.get_booking_per_room(room_name=room_name)
+		return resource
 	except Exception as err:
 		raise HTTPException(status_code=404, detail=str(err))
-	return response
 
 @router.post("/api/rooms/{room_name}/bookings", status_code=status.HTTP_201_CREATED)
 async def booking(
@@ -185,13 +185,13 @@ async def booking(
 	status: default 202, success 201, slot used 502, other 400
 	"""
 	try:
-		response["resource"] = await service.register_booking(
+		resource = await service.register_booking(
 			intra=pl.intra,
 			room_name=room_name,
 			begin_at=pl.begin_at,
 			end_at=pl.end_at
 			)
-		return response	
+		return { "resource": resource }
 	except Exception as err:
 		raise HTTPException(status_code=400, detail=str(err))
 
@@ -209,13 +209,13 @@ async def booking(
 	status: default 202, success 200, fail 400
 	"""
 	try:
-		response["resource"] = await service.update_booking(
+		resource = await service.update_booking(
 			room_name,
 			begin_at=pl.begin_at,
 			end_at=pl.end_at,
 			id=id
 			)
-		return response
+		return { "resource": resource }
 	except Exception as err:
 		raise HTTPException(status_code=400, detail=str(err))
 
@@ -232,10 +232,10 @@ async def booking(
 	status: always 204
 	"""
 	try:
-		response["resource"] = await service.delete_booking(
+		resource = await service.delete_booking(
 			room_name=room_name, 
 			id=id
 			)
+		return { "resource": resource }
 	except Exception as err:
-		response["error"] = err
-	return response
+		raise HTTPException(status_code=204, detail=str(err))
