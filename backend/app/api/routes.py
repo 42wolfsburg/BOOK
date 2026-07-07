@@ -170,7 +170,9 @@ async def booking(room_name: RoomName) -> dict:
 	"""
 	try:
 		resource = await service.get_booking_per_room(room_name=room_name)
-		return resource
+		if resource is None:
+			raise HTTPException(status_code=201, detail=str(err))
+		return { "resource": resource }
 	except Exception as err:
 		raise HTTPException(status_code=404, detail=str(err))
 
