@@ -13,7 +13,7 @@ export default function useBookings(currentRoom) {
       const { resource } = await getBookings(currentRoom.slug);
       setEvents(
         resource.map((b) => ({
-          title: `Booked by ${b.intra}`,
+          title: `${b.intra}`,
           start: new Date(b.begin_at),
           end: new Date(b.end_at),
         }))
@@ -41,7 +41,7 @@ export default function useBookings(currentRoom) {
 
     setEvents((prev) => [
       ...prev, 
-      { title: `Booked by ${login}`, start: bookingData.start, end: bookingData.end }
+      { title: `${login}`, start: bookingData.start, end: bookingData.end }
     ]);
     setShowModal(false);
   };
