@@ -6,8 +6,7 @@ import {
 } from "react-big-calendar";
 
 import moment from "moment";
-
-//import BookingCard from "./BookingCards";
+import BookingCard from '../components/BookingCards'
 import CalendarToolbar from "./CalendarToolbar";
 
 const localizer = momentLocalizer(moment);
@@ -40,6 +39,7 @@ export default function CalendarView({
     dayHeaderFormat: (date, culture, loc) =>
       isMobile ? loc.format(date, "ddd", culture) : loc.format(date, "D ddd", culture),
     weekdayFormat: (date, culture, loc) => loc.format(date, "ddd", culture),
+    eventTimeRangeFormat: () => "",
   };
 
   // time logic
@@ -111,7 +111,7 @@ export default function CalendarView({
         toolbar={true}
         components={{
           toolbar: CalendarToolbar,
-          //event: BookingCard,
+          event: BookingCard,
         }}
         formats={formats}
 

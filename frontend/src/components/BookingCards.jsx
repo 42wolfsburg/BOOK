@@ -1,6 +1,4 @@
-export default function BookingCard({
-  event,
-}) {
+export default function BookingCard({ event }) {
   return (
     <div className="h-full overflow-hidden rounded-xl border border-violet-200 bg-violet-100 px-2 py-1 shadow-sm">
 
