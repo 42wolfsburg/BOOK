@@ -76,7 +76,7 @@ class crud:
 			with conn.cursor() as cursor:
 				cursor.execute(
 				"""
-				SELECT begin_at, end_at, intra, is_staff
+				SELECT id, begin_at, end_at, intra, is_staff
 				FROM bookings
 				WHERE room_name = %s
 				""", (room_name,))
@@ -111,7 +111,7 @@ class crud:
 				cursor.execute(
 				"""
 				DELETE FROM bookings
-				WHERE id = $1
+				WHERE id = %s
 				""", (str(id),))
 			conn.commit()
 		finally:
