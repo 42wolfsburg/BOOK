@@ -26,6 +26,8 @@ export default function App() {
     goToNext,
   } = useCalendar();
 
+  const currentRoom = rooms.find((room) => room.id === selectedRoom) || rooms[0];
+
   // bookings state
   const {
     events,
@@ -36,9 +38,7 @@ export default function App() {
     setBookingData,
     openBookingModal,
     saveBooking,
-  } = useBookings(selectedRoom, eventsData);
-
-  const currentRoom = rooms.find((room) => room.id === selectedRoom) || rooms[0];
+  } = useBookings(currentRoom);
 
   return (
     <div className="min-h-screen bg-[#f5f7fb] p-3 md:p-5 lg:p-8">
