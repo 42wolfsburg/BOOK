@@ -56,7 +56,7 @@ async def delete_booking(
 	id: str
 		UUID provideed during the registration of booking.
 	"""
-	crud.db_delete_booking(room_name, id)
+	db.db_delete_booking(room_name, id)
 
 async def update_booking(
 	room_name: str,
