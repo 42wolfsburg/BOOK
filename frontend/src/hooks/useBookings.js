@@ -46,8 +46,13 @@ export default function useBookings(currentRoom) {
     setShowModal(false);
   };
 
+  const deleteBooking = async (event) => {
+    await deletebookingById({ room_name: currentRoom.slug, id: event.id });
+    setEvents((prev) => prev.filter((e) => e.id !== event.id));
+  }
+
   return {
     events, setEvents, showModal, setShowModal,
-    bookingData, setBookingData, openBookingModal, saveBooking,
+    bookingData, setBookingData, openBookingModal, saveBooking, deleteBooking,
   };
 }
