@@ -8,7 +8,7 @@ import {
 import moment from "moment";
 import BookingCard from '../components/BookingCards'
 import DeleteBooking from '../components/DeleteBooking'
-import CalendarToolbar from "../CalendarToolbar";
+import CalendarToolbar from "../components/CalendarToolbar";
 
 const localizer = momentLocalizer(moment);
 
