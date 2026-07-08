@@ -194,11 +194,11 @@ async def booking(
 	"""
 	try:
 		resource = await service.register_booking(
-			intra=pl.intra,
+			intra=user['login'],
 			room_name=room_name,
 			begin_at=pl.begin_at,
 			end_at=pl.end_at,
-			is_staff=pl.is_staff
+			is_staff=user['is_staff']
 			)
 		return { "resource": resource }
 	except Exception as e:

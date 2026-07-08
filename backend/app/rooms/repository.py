@@ -43,8 +43,8 @@ class crud:
 			with conn.cursor() as cursor:
 				cursor.execute(
 				"""
-				INSERT INTO bookings (intra, room_name, begin_at, end_at)
-				VALUES (%s, %s, to_timestamp(%s), to_timestamp(%s))
+				INSERT INTO bookings (intra, room_name, begin_at, end_at, is_staff)
+				VALUES (%s, %s, to_timestamp(%s), to_timestamp(%s), %s)
 				RETURNING id, intra, room_name, begin_at, end_at, is_staff
 				""",
 				(intra, room_name, begin_at, end_at, is_staff)

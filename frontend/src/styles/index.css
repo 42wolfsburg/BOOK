@@ -9,6 +9,7 @@
   padding: 4px 8px;
   color: #5b21b6; /* violet-800 */
   transition: background-color 0.15s ease;
+  overflow: visible
 }
 
 .rbc-event:hover {
@@ -18,4 +19,8 @@
 .rbc-event-label {
   font-size: 11px;
   font-weight: 500;
+}
+
+.rbc-event-content {
+  overflow: visible;
 }

@@ -11,7 +11,6 @@ export default function DeleteBooking({ event, onDelete }) {
             >   
                 x
             </button>
-
         </div>
     );
 }

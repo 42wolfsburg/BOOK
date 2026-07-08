@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
 
-import {
-  Calendar,
-  momentLocalizer,
-} from "react-big-calendar";
+import { Calendar, momentLocalizer} from "react-big-calendar";
 
 import moment from "moment";
 import BookingCard from '../components/BookingCards'
@@ -20,6 +17,7 @@ export default function CalendarView({
   setCalendarView,
   onOpenBookingModal,
   onDeleteBooking,
+  onSelectEvent,
 }) {
   const [selectedSlot, setSelectedSlot] = useState(null);
 
@@ -49,12 +47,7 @@ export default function CalendarView({
 
   function isOverlapping(newEvent) {
     return events.some((event) => {
-      return (
-        newEvent.start <
-          event.end &&
-        newEvent.end >
-          event.start
-      );
+      return (newEvent.start < event.end && newEvent.end > event.start);
     });
   }
 
@@ -86,16 +79,16 @@ export default function CalendarView({
         toolbar={true}
         components={{
           toolbar: CalendarToolbar,
-          // event: BookingCard,
           event: (props) => <DeleteBooking {...props} onDelete={onDeleteBooking} />,
 
         }}
         formats={formats}
 
+        onSelectEvent={onSelectEvent}
+
         // disable invalid slots
         onSelecting={(range) => {
-          const now =
-            new Date();
+          const now = new Date();
 
           // month view
           if (calendarView === "month") {
@@ -121,7 +114,6 @@ export default function CalendarView({
           // month view
           if (calendarView === "month") {
             const day = new Date(slot.start);
-
             day.setHours(0, 0, 0, 0);
             const today = new Date();
             today.setHours(0, 0, 0, 0);
@@ -132,14 +124,10 @@ export default function CalendarView({
             setCurrentDate(slot.start);
           }
 
-          // past
-          if (slot.start < now) return;
-
-          // too long
-          if (isTooLong(slot.start, slot.end)) return;
-
-          // overlap
-          if (isOverlapping({start: slot.start, end: slot.end})) return;
+          
+          if (slot.start < now) return; // past
+          if (isTooLong(slot.start, slot.end)) return; // too long
+          if (isOverlapping({start: slot.start, end: slot.end})) return; // overlap
 
           // save slot
           setSelectedSlot(slot);

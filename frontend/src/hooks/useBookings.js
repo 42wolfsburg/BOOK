@@ -6,6 +6,8 @@ export default function useBookings(currentRoom) {
   const [events, setEvents] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [bookingData, setBookingData] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const login = useContext(AuthContext)
 
   useEffect(() => {
@@ -46,27 +48,45 @@ export default function useBookings(currentRoom) {
     const { resource } = await postBookings(payload)
 
     setEvents((prev) => [
-      ...prev, 
+      ...prev,
       {
-        id: resource.id, 
-        title: `${login}`, 
-        start: bookingData.start, 
-        end: bookingData.end 
+        id: resource.id,
+        title: login.login,
+        start: bookingData.start,
+        end: bookingData.end
       }
     ]);
     setShowModal(false);
   };
 
-  const deleteBooking = async (event) => {
-    await deleteBookingById({ 
-      room_name: currentRoom.slug, 
-      id: event.id, 
-    });
-    setEvents((prev) => prev.filter((e) => e.id !== event.id));
-  }
+  const openDeleteModal = (event) => {
+    setSelectedEvent(event);
+    setShowDeleteModal(true);
+  };
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+  };
+
+  const confirmDelete = async () => {
+    if (!selectedEvent) return;
+
+    try {
+      await deleteBookingById({
+        room_name: currentRoom.slug,
+        id: selectedEvent.id,
+      });
+      setEvents((prev) => prev.filter((e) => e.id !== selectedEvent.id));
+    } catch (e) {
+      console.error("Failed to delete booking", e);
+    } finally {
+      closeDeleteModal();
+    }
+  };
 
   return {
     events, setEvents, showModal, setShowModal,
-    bookingData, setBookingData, openBookingModal, saveBooking, deleteBooking,
+    bookingData, setBookingData, openBookingModal, saveBooking,
+    selectedEvent, showDeleteModal, openDeleteModal, closeDeleteModal, confirmDelete,
   };
 }
