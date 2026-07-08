@@ -57,7 +57,7 @@ export default function Header() {
             />
 
             <p className="block text-xs sm:text-sm font-medium text-slate-800 max-w-[60px] sm:max-w-[80px] truncate">
-              {login && <span>{login}</span>}
+              {login.login && <span>{login.login}</span>}
             </p>
           </div>
 
