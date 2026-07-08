@@ -1,8 +1,15 @@
-import { useState, useRef, useEffect } from "react";
+import { useContext, useState, useRef, useEffect } from "react";
+import { AuthContext } from "./AuthGate";
 
 export default function RoomDropdown({ rooms, selectedRoom, setSelectedRoom }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
+  const login = useContext(AuthContext);
+  const canSee = login.isStaff;
+
+  const visibleRooms = canSee
+    ? rooms
+    : rooms.filter((room) => room.slug !== "gallery" && room.slug !== "space-invader");
 
   useEffect(() => {
     function onDoc(e) {
@@ -13,7 +20,7 @@ export default function RoomDropdown({ rooms, selectedRoom, setSelectedRoom }) {
     return () => document.removeEventListener("pointerdown", onDoc);
   }, []);
 
-  const current = rooms.find((r) => r.id === selectedRoom) || rooms[0];
+  const current = visibleRooms.find((r) => r.id === selectedRoom) || visibleRooms[0];
 
   return (
     <div ref={ref} className="relative w-full max-w-md">
@@ -57,9 +64,9 @@ export default function RoomDropdown({ rooms, selectedRoom, setSelectedRoom }) {
 
           {/* room list */}
           <ul role="listbox" tabIndex={-1} className="max-h-64 overflow-auto divide-y divide-gray-100 p-1">
-            {rooms.length === 0 && <li className="p-3 text-sm text-slate-500">No rooms available</li>}
+            {visibleRooms.length === 0 && <li className="p-3 text-sm text-slate-500">No rooms available</li>}
 
-            {rooms.map((room) => {
+            {visibleRooms.map((room) => {
               const active = room.id === selectedRoom;
               return (
                 <li
