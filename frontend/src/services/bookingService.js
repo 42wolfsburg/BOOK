@@ -42,14 +42,14 @@ export const postBookings = async ({
     intra,
     begin_at,
     end_at,
-    isStaff
+    is_staff
     }) => {
     let response;
     
     try {
         response = await apiRequest(`/api/rooms/${room_name}/bookings`, {
             method: "POST",
-            body:   JSON.stringify({ intra, begin_at, end_at, isStaff })
+            body:   JSON.stringify({ intra, begin_at, end_at, is_staff })
         });
     } catch (e) {
         throw e;
