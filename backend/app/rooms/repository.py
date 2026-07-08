@@ -9,7 +9,8 @@ class crud:
 		intra: str,
 		room_name: str, 
 		begin_at: int, 
-		end_at: int
+		end_at: int,
+		is_staff: bool
 		) -> dict:
 		"""
 		CRUD operation responsible for insertion of booking resource in database.
@@ -17,16 +18,19 @@ class crud:
 		:Parameters:
 		------------
 		intra: str
-			Intra login of student/staff in string format
+			Intra login of student/staff in string format.
 
 		room_name: str
-			Name of specific meeting room. Meeting rooms names must be hardcoded 
+			Name of specific meeting room. Meeting rooms names must be hardcoded.
 
-		begin_at
-			UNIX timestamp specifying beginning of booking
+		begin_at: int
+			UNIX timestamp specifying beginning of booking.
 
-		end_at
-			UNIX timestamp specifying end of booking
+		end_at: int
+			UNIX timestamp specifying end of booking.
+
+		is_staff: bool
+			Boolean identifying user as staff or not.
 
 		:Returns:
 		---------
@@ -43,7 +47,7 @@ class crud:
 				VALUES (%s, %s, to_timestamp(%s), to_timestamp(%s))
 				RETURNING id, intra, room_name, begin_at, end_at, is_staff
 				""",
-				(intra, room_name, begin_at, end_at)
+				(intra, room_name, begin_at, end_at, is_staff)
 				)
 				row = cursor.fetchone()
 				column = [desc[0] for desc in cursor.description]
