@@ -38,6 +38,7 @@ class BookingCreation(BaseModel):
 	intra: str = Field(..., min_length=1, max_length=10)
 	begin_at: float = Field(...)
 	end_at: float = Field(...)
+	is_staff: bool = Field(...)
 
 	@model_validator(mode="after")
 	def validate(self) -> 'BookingRequest':
