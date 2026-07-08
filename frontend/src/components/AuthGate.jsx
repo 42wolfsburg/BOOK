@@ -6,6 +6,7 @@ export const AuthContext = createContext(null)
 export default function AuthGate({children}) {
     const [loggedIn, setLoggedIn] = useState(null)
     const [login, setLogin] = useState(null)
+    const [isStaff, setIsStaff] = useState(null)
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -18,6 +19,7 @@ export default function AuthGate({children}) {
                     const data = await res.json()
                     setLogin(data.login)
                     setLoggedIn(true)
+                    setIsStaff(data.is_staff)
                 } else {
                     setLoggedIn(false)
                 }
@@ -33,7 +35,7 @@ export default function AuthGate({children}) {
     if (loggedIn === null) return null
     if (loggedIn === false) return <Navigate to="/login" replace />
     return (
-        <AuthContext.Provider value={login}>
+        <AuthContext.Provider value={{login, isStaff}}>
             {children}
         </AuthContext.Provider>
     )
