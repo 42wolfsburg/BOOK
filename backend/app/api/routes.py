@@ -5,11 +5,12 @@ from uuid import UUID
 from typing import Annotated
 from urllib.parse import urlencode
 from loguru import logger
-from fastapi import APIRouter, status, HTTPException, Request, Response, Cookie
+from fastapi import APIRouter, status, HTTPException, Request, Response, Cookie, Depends
 from fastapi.responses import RedirectResponse
 from datetime import datetime, timedelta, timezone
 
 from ..rooms import service
+from ..auth.auth import get_current_user
 from config import settings
 from ..models.schemas import BookingRequest, BookingCreation, RoomName
 
@@ -31,19 +32,23 @@ async def root():
 	})
 
 @router.get("/auth/me", status_code=200) #check already authenticated user
-async def me(session: Annotated[str | None, Cookie()] = None):
-	try:
-		payload = jwt.decode(session, key=settings.JWT_SECRET, algorithms=["HS256"])
-		return {
-			"login": payload["login"],
-			"is_staff": payload["is_staff"]
-		  }
-	except jwt.ExpiredSignatureError as e:
-		logger.error(f'ERROR: Expired signature in token {e}')
-		raise HTTPException(status_code=401, detail=str(e))
-	except jwt.InvalidTokenError as e:
-		logger.error(f'ERROR: Invalid token {e}')
-		raise HTTPException(status_code=401, detail=str(e))
+async def me(user: Annotated[dict, Depends(get_current_user)]):
+	return {
+		"login": user["login"],
+		"is_staff": user["is_staff"]
+	}
+	# try:
+	# 	payload = jwt.decode(session, key=settings.JWT_SECRET, algorithms=["HS256"])
+	# 	return {
+	# 		"login": payload["login"],
+	# 		"is_staff": payload["is_staff"]
+	# 	  }
+	# except jwt.ExpiredSignatureError as e:
+	# 	logger.error(f'ERROR: Expired signature in token {e}')
+	# 	raise HTTPException(status_code=401, detail=str(e))
+	# except jwt.InvalidTokenError as e:
+	# 	logger.error(f'ERROR: Invalid token {e}')
+	# 	raise HTTPException(status_code=401, detail=str(e))
 
 @router.get("/auth/login", status_code=302) #redirect HTTP code
 async def login():
@@ -179,7 +184,8 @@ async def booking(room_name: RoomName) -> dict:
 @router.post("/api/rooms/{room_name}/bookings", status_code=status.HTTP_201_CREATED)
 async def booking(
 	room_name: RoomName,
-	pl: BookingCreation
+	pl: BookingCreation,
+	user: Annotated[dict, Depends(get_current_user)]
 	) -> dict:
 	"""
 	booking request
@@ -188,10 +194,11 @@ async def booking(
 	"""
 	try:
 		resource = await service.register_booking(
-			intra=pl.intra,
+			intra=user['login'],
 			room_name=room_name,
 			begin_at=pl.begin_at,
-			end_at=pl.end_at
+			end_at=pl.end_at,
+			is_staff=user['is_staff']
 			)
 		return { "resource": resource }
 	except Exception as err:
@@ -201,9 +208,7 @@ async def booking(
 async def booking(
 	room_name: RoomName, 
 	pl: BookingRequest,
-	# RFC 4122 states that UUIDs are a standard size/length of 36
-	# id: str = Field(..., min_length=16, max_length=128)
-	id: UUID #= Path(..., min_length=36, max_length=36)
+	id: UUID
 	) -> dict:
 	"""
 	booking patch
@@ -224,20 +229,22 @@ async def booking(
 @router.delete("/api/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def booking(
 	room_name: RoomName,
-	# RFC 4122 states that UUIDs are a standard size/length of 36
-	# id: str = Field(..., min_length=16, max_length=128)
-	id: UUID #= Path(..., min_length=36, max_length=36)
+	id: UUID,
+	user: Annotated[dict, Depends(get_current_user)]
 	) -> None:
 	"""
 	booking delete
 
-	status: always 204
+	status: always 204 (not really true)
 	"""
 	try:
-		resource = await service.delete_booking(
-			room_name=room_name, 
-			id=id
+		await service.delete_booking(
+			room_name=room_name,
+			id=id,
+			login=user['login'],
+			is_staff=user['is_staff']
 			)
-		return { "resource": resource }
-	except Exception as err:
-		raise HTTPException(status_code=204, detail=str(err))
+	except PermissionError as e:
+		raise HTTPException(status_code=403, detail=str(e))
+	except Exception as e:
+		raise HTTPException(status_code=204, detail=str(e))
