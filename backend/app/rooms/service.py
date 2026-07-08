@@ -7,7 +7,8 @@ async def register_booking(
 	intra: str,
 	room_name: str,
 	begin_at: int,
-	end_at: int
+	end_at: int,
+	is_staff: bool
 	) -> dict:
 	"""
 	Function responsible for registration of booking. The same registration is
@@ -22,11 +23,14 @@ async def register_booking(
 	room_name: str
 		Name of the meeting room
 
-	begin_at: str
+	begin_at: int
 		UNIX timestamp regarding beginning of booking.
 	
-	end_at: str
+	end_at: int
 		UNIX timestamp regarding end of booking.
+
+	is_staff: bool
+		Boolean identifying user as staff or not.
 
 	:Returns:
 	---------
@@ -37,11 +41,19 @@ async def register_booking(
 		boolean value indicating if it's a staff member or not.
 	
 	"""
-	resource: dict = db.db_insert_booking(intra, room_name, begin_at, end_at)
+	rooms_not_for_students: list = ["space-invader", "gallery"]
+	if is_staff is False and room_name in rooms_not_for_students:
+		raise PermissionError("This room is resereved for staff members")
+	resource: dict = db.db_insert_booking(intra, room_name, begin_at, end_at, is_staff)
 
 	return resource
 
-async def delete_booking(id: UUID) -> None:
+async def delete_booking(
+	room_name: str, 
+	id: UUID, 
+	login: str, 
+	is_staff: bool
+	) -> None:
 	"""
 	Function responsible for deletion of bookings. According to REST architecture
 	we should not return anything, as the action itself is a result of deletion of
@@ -50,9 +62,19 @@ async def delete_booking(id: UUID) -> None:
 
 	:Parameters:
 	------------
-	id: str
+	id: UUID
 		UUID provideed during the registration of booking.
+	
+	login: str
+		42 intra login given to students and staff by 42.
+	
+	is_staff: bool
+		Boolean value that determines is request is from staff or student; student means
+		it would be false, and staff means is would be true.
 	"""
+	booking = db.db_get_booking(room_name, id)
+	if not is_staff and booking["intra"] != login:
+		raise PermissionError("Not authorized to delete this booking")
 	db.db_delete_booking(id)
 
 async def update_booking(
