@@ -194,15 +194,15 @@ async def booking(
 	"""
 	try:
 		resource = await service.register_booking(
-			intra=user['login'],
+			intra=pl.intra,
 			room_name=room_name,
 			begin_at=pl.begin_at,
 			end_at=pl.end_at,
-			is_staff=user['is_staff']
+			is_staff=pl.is_staff
 			)
 		return { "resource": resource }
-	except Exception as err:
-		raise HTTPException(status_code=400, detail=str(err))
+	except Exception as e:
+		raise HTTPException(status_code=400, detail=str(e))
 
 @router.patch("/api/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_201_CREATED)
 async def booking(

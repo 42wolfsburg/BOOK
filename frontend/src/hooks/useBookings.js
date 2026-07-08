@@ -10,15 +10,19 @@ export default function useBookings(currentRoom) {
 
   useEffect(() => {
     async function loadBookings() {
-      const { resource } = await getBookings(currentRoom.slug);
-      setEvents(
-        resource.map((b) => ({
-          id: b.id,
-          title: `${b.intra}`,
-          start: new Date(b.begin_at),
-          end: new Date(b.end_at),
-        }))
-      );
+      try {
+        const { resource } = await getBookings(currentRoom.slug);
+        setEvents(
+          resource.map((b) => ({
+            id: b.id,
+            title: `${b.intra}`,
+            start: new Date(b.begin_at),
+            end: new Date(b.end_at),
+          }))
+        )
+      } catch (e) {
+        throw (e)
+      }
     }
     loadBookings();
   }, [currentRoom]);

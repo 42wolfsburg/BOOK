@@ -8,6 +8,7 @@ export const getAllBookings = async () => {
         });
     } catch (e) {
         throw e;
+        console.alert(e)
     }
     return response
 }
@@ -21,6 +22,7 @@ export const getBookingById = async ({room_name, id}) => {
         })
     } catch (e) {
         throw e;
+        console.alert(e)
     }
     return response
 }
@@ -53,6 +55,7 @@ export const postBookings = async ({
         });
     } catch (e) {
         throw e;
+        console.alert(e)
     }
     return response
 }
@@ -73,6 +76,7 @@ export const patchBookingById = async ({
         });
     } catch (e) {
         throw e;
+        console.alert(e)
     }
     return response
 }
@@ -86,6 +90,7 @@ export const deleteBookingById = async ({room_name, id}) => {
         });
     } catch (e) {
         throw e;
+        console.alert(e)
     }
     return response
 }
