@@ -42,7 +42,7 @@ export const postBookings = async ({
     intra,
     begin_at,
     end_at,
-    is_staff
+    isStaff
     }) => {
     let response;
     
