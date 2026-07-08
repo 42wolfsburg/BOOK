@@ -33,9 +33,10 @@ export default function useBookings(currentRoom) {
 
     const payload = {
       room_name: currentRoom.slug,
-      intra: login,
+      intra: login.login,
       begin_at: Math.floor(bookingData.start.getTime() / 1000),
       end_at: Math.floor(bookingData.end.getTime() / 1000),
+      is_staff: login.isStaff,
     };
 
     const { resource } = await postBookings(payload)
@@ -53,7 +54,10 @@ export default function useBookings(currentRoom) {
   };
 
   const deleteBooking = async (event) => {
-    await deleteBookingById({ room_name: currentRoom.slug, id: event.id });
+    await deleteBookingById({ 
+      room_name: currentRoom.slug, 
+      id: event.id, 
+    });
     setEvents((prev) => prev.filter((e) => e.id !== event.id));
   }
 
