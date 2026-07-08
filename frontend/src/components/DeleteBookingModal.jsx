@@ -1,4 +1,6 @@
+import { useContext } from 'react'
 import { AnimatePresence, motion } from "framer-motion";
+import { AuthContext } from '../components/AuthGate'
 import moment from "moment";
 
 export default function DeleteBookingModal({
@@ -8,6 +10,8 @@ export default function DeleteBookingModal({
   onDelete,
 }) {
   if (!event) return null;
+  const login = useContext(AuthContext)
+  const canDelete = login.isStaff || event.title === login.login;
 
   return (
     <AnimatePresence>
@@ -52,15 +56,20 @@ export default function DeleteBookingModal({
                 onClick={onClose}
                 className="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
               >
-                Cancel
+                Close
               </button>
 
-              <button
-                onClick={onDelete}
-                className="rounded-2xl bg-red-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-red-700"
-              >
-                Delete Booking
-              </button>
+            <button
+            onClick={canDelete ? onDelete : undefined}
+            disabled={!canDelete}
+            className={`rounded-2xl px-5 py-3 text-sm font-medium transition ${
+                canDelete
+                ? "bg-red-600 text-white hover:bg-red-700"
+                : "bg-slate-200 text-slate-400 cursor-not-allowed"
+            }`}
+            >
+            Delete Booking
+            </button>
             </div>
           </motion.div>
         </>

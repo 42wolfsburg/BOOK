@@ -59,6 +59,18 @@ export default function useBookings(currentRoom) {
     setShowModal(false);
   };
 
+  const deleteBooking = async (event) => {
+    try {
+      await deleteBookingById({
+        room_name: currentRoom.slug,
+        id: event.id,
+      });
+      setEvents((prev) => prev.filter((e) => e.id !== event.id));
+    } catch (e) {
+      console.error("Failed to delete booking", e);
+    }
+  };
+
   const openDeleteModal = (event) => {
     setSelectedEvent(event);
     setShowDeleteModal(true);
@@ -70,23 +82,14 @@ export default function useBookings(currentRoom) {
 
   const confirmDelete = async () => {
     if (!selectedEvent) return;
-
-    try {
-      await deleteBookingById({
-        room_name: currentRoom.slug,
-        id: selectedEvent.id,
-      });
-      setEvents((prev) => prev.filter((e) => e.id !== selectedEvent.id));
-    } catch (e) {
-      console.error("Failed to delete booking", e);
-    } finally {
-      closeDeleteModal();
-    }
+    await deleteBooking(selectedEvent);
+    closeDeleteModal();
   };
 
   return {
     events, setEvents, showModal, setShowModal,
     bookingData, setBookingData, openBookingModal, saveBooking,
     selectedEvent, showDeleteModal, openDeleteModal, closeDeleteModal, confirmDelete,
+    deleteBooking
   };
 }

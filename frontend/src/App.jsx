@@ -39,6 +39,7 @@ export default function App() {
     openDeleteModal,
     closeDeleteModal,
     confirmDelete,
+    deleteBooking,
   } = useBookings(currentRoom);
 
   return (
@@ -71,6 +72,8 @@ export default function App() {
               setCalendarView={setCalendarView}
               onOpenBookingModal={openBookingModal}
               onSelectEvent={openDeleteModal}
+              onQuickDelete={deleteBooking}
+
             />
           </ResponsiveLayout>
         </div>
