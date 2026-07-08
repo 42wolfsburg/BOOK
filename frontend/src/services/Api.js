@@ -24,6 +24,11 @@ export const apiRequest = async (endpoint, options = {}) => {
         throw new Error('Network error. Please check your connection and try again')
     }
 
+    if (response.status === 204) {
+        if (!response.ok) throw new Error(`Request failed with status ${response.status}`)
+        return null;
+    }
+
     const contentType = response.headers.get('content-type');
 
     const data = contentType && contentType.includes('application/json')
