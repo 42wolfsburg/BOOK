@@ -17,14 +17,14 @@ FT_AUTH_URL  = "https://api.intra.42.fr/oauth/authorize"
 FT_TOKEN_URL = "https://api.intra.42.fr/oauth/token"
 FT_USER_URL  = "https://api.intra.42.fr/v2/me"
 
-@router.get("/me", status_code=200) #check already authenticated user
+@auth_router.get("/me", status_code=200) #check already authenticated user
 async def me(user: Annotated[dict, Depends(get_current_user)]):
 	return {
 		"login": user["login"],
 		"is_staff": user["is_staff"]
 	}
 
-@router.get("/login", status_code=302) #redirect HTTP code
+@auth_router.get("/login", status_code=302) #redirect HTTP code
 async def login():
 	state = secrets.token_urlsafe(32)
 
@@ -48,7 +48,7 @@ async def login():
 
 	return response
 
-@router.get("/logout", status_code=200)
+@auth_router.get("/logout", status_code=200)
 async def logout(response: Response):
 	response.delete_cookie(
 		key="session",
@@ -57,7 +57,7 @@ async def logout(response: Response):
 	)
 	return {"message": "logged out"}
 
-@router.get("/callback", status_code=302) #redirect HTTP code
+@auth_router.get("/callback", status_code=302) #redirect HTTP code
 async def callback(request: Request, code: str, state: str):
 	stored_state = request.cookies.get("oauth_state")
 	if not stored_state or stored_state != state:

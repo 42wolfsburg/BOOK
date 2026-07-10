@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 from contextlib import asynccontextmanager
 from app.api.routes import api_router
-from app.api.auth import auth_router
+from app.auth.routes import auth_router
 from app.database.init import init_db, close_db
 from apscheduler.schedulers.background import BackgroundScheduler
 from utils.cleanup import delete_past_bookings

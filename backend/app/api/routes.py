@@ -11,7 +11,7 @@ from ..models.schemas import BookingRequest, BookingCreation, RoomName
 
 api_router = APIRouter()
 
-@router.get("/", status_code=status.HTTP_200_OK)
+@api_router.get("/", status_code=status.HTTP_200_OK)
 async def root():
 	logger.info("Received request from root")
 	return ({
@@ -22,11 +22,11 @@ async def root():
 	})
 
 
-# @router.get("/rooms")
+# @api_router.get("/rooms")
 # async def rooms():
 # 	return await service.get_all_bookings()
 
-@router.get("/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_200_OK)
+@api_router.get("/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_200_OK)
 async def booking(
 	room_name: RoomName,
 	id: UUID
@@ -45,7 +45,7 @@ async def booking(
 	except Exception as err:
 		raise HTTPException(status_code=404, detail=str(err))
 
-@router.get("/rooms/{room_name}/bookings", status_code=status.HTTP_200_OK)
+@api_router.get("/rooms/{room_name}/bookings", status_code=status.HTTP_200_OK)
 async def booking(room_name: RoomName) -> dict:
 	"""
 	booking data request
@@ -60,7 +60,7 @@ async def booking(room_name: RoomName) -> dict:
 	except Exception as err:
 		raise HTTPException(status_code=404, detail=str(err))
 
-@router.post("/rooms/{room_name}/bookings", status_code=status.HTTP_201_CREATED)
+@api_router.post("/rooms/{room_name}/bookings", status_code=status.HTTP_201_CREATED)
 async def booking(
 	room_name: RoomName,
 	pl: BookingCreation,
@@ -83,7 +83,7 @@ async def booking(
 	except Exception as e:
 		raise HTTPException(status_code=400, detail=str(e))
 
-@router.patch("/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_201_CREATED)
+@api_router.patch("/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_201_CREATED)
 async def booking(
 	room_name: RoomName, 
 	pl: BookingRequest,
@@ -105,7 +105,7 @@ async def booking(
 	except Exception as err:
 		raise HTTPException(status_code=400, detail=str(err))
 
-@router.delete("/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@api_router.delete("/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def booking(
 	room_name: RoomName,
 	id: UUID,
