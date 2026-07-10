@@ -7,7 +7,7 @@ unix_hour: float = 3600
 unix_month: float = 2629743
 
 class RoomName(str, Enum):
-	space = "space"
+	galaxy = "galaxy"
 	piscine = "piscine"
 	space_invader = "space-invader"
 	gallery = "gallery"
@@ -20,7 +20,6 @@ class BookingRequest(BaseModel):
 	@field_validator("begin_at", "end_at")
 	@classmethod
 	def must_be_valid_timestamp(cls, v: int) -> int:
-		# Unix timestamps are positive and shouldn't be absurdly far in the future
 		if v < 0:
 			raise ValueError("Timestamp cannot be negative")
 		if v > 9_999_999_999:  # year ~2286, reasonable upper bound
@@ -37,10 +36,9 @@ class BookingRequest(BaseModel):
 
 class BookingCreation(BaseModel):
 	intra: str = Field(..., min_length=1, max_length=10)
-	# begin_at: float = Field(..., ge=time(), le=(time() + (unix_month * 3)))
-	# end_at: float = Field(..., ge=begin_at, le=(begin_at + (unix_hour * 3)))
 	begin_at: float = Field(...)
 	end_at: float = Field(...)
+	is_staff: bool = Field(...)
 
 	@model_validator(mode="after")
 	def validate(self) -> 'BookingRequest':
