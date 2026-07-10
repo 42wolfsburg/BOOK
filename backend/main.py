@@ -1,8 +1,16 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 from contextlib import asynccontextmanager
 from app.api.routes import router
 from app.database.init import init_db, close_db
+from apscheduler.schedulers.background import BackgroundScheduler
+from utils.cleanup import delete_past_bookings
+
+# Scheduler responsible for clearing old bookings that have passed
+scheduler = BackgroundScheduler()
+scheduler.add_job(delete_past_bookings, 'interval', minutes=3)
+scheduler.start()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> None:
@@ -23,6 +31,19 @@ app = FastAPI(
 	description="BOOK's Online Occupancy Keeper",
 	version="1.0.0",
 	lifespan=lifespan	
+)
+
+# CORS middleware to tell which origins are allowed
+origins = [
+	"http://localhost:5173"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(router)
