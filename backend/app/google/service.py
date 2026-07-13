@@ -51,6 +51,8 @@ async def create_event(room_name: str, begin_at: int, end_at: int, summary: str 
 			headers={"Authorization": f"Bearer {token}"},
 			json=body,
 		)
+		if response.status_code >= 400:
+			logger.error(f"Google Calendar error {response.status_code}: {response.text}")
 		response.raise_for_status()
 		event = response.json()
 
@@ -76,6 +78,8 @@ async def update_event(room_name: str, event_id: str, begin_at: int, end_at: int
 			headers={"Authorization": f"Bearer {token}"},
 			json=body,
 		)
+		if response.status_code >= 400:
+			logger.error(f"Google Calendar error {response.status_code}: {response.text}")
 		response.raise_for_status()
 
 	logger.info(f"Updated Google Calendar event {event_id} for {room_name}")
@@ -94,6 +98,8 @@ async def delete_event(room_name: str, event_id: str) -> None:
 			f"{CALENDAR_API_BASE}/calendars/{calendar_id}/events/{event_id}",
 			headers={"Authorization": f"Bearer {token}"},
 		)
+		if response.status_code >= 400:
+			logger.error(f"Google Calendar error {response.status_code}: {response.text}")
 		if response.status_code != 404:
 			response.raise_for_status()
 

@@ -43,6 +43,7 @@ async def booking(
 			)
 		return {"resource": resource}
 	except Exception as err:
+		logger.error(str(e))
 		raise HTTPException(status_code=404, detail=str(err))
 
 @api_router.get("/rooms/{room_name}/bookings", status_code=status.HTTP_200_OK)
@@ -58,6 +59,7 @@ async def booking(room_name: RoomName) -> dict:
 			raise HTTPException(status_code=201, detail=str(err))
 		return { "resource": resource }
 	except Exception as err:
+		logger.error(str(e))
 		raise HTTPException(status_code=404, detail=str(err))
 
 @api_router.post("/rooms/{room_name}/bookings", status_code=status.HTTP_201_CREATED)
@@ -81,6 +83,7 @@ async def booking(
 			)
 		return { "resource": resource }
 	except Exception as e:
+		logger.error(str(e))
 		raise HTTPException(status_code=400, detail=str(e))
 
 @api_router.patch("/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_201_CREATED)
@@ -103,6 +106,7 @@ async def booking(
 			)
 		return { "resource": resource }
 	except Exception as err:
+		logger.error(str(e))
 		raise HTTPException(status_code=400, detail=str(err))
 
 @api_router.delete("/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -124,6 +128,8 @@ async def booking(
 			is_staff=user['is_staff']
 			)
 	except PermissionError as e:
+		logger.error(str(e))
 		raise HTTPException(status_code=403, detail=str(e))
 	except Exception as e:
+		logger.error(str(e))
 		raise HTTPException(status_code=204, detail=str(e))
