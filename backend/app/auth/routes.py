@@ -41,7 +41,7 @@ async def login():
 		key="oauth_state",
 		value=state,
 		httponly=True,
-		secure=False, # change in prod
+		secure=True,
 		samesite="lax",
 		max_age=500
 	)

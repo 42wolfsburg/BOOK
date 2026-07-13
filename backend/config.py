@@ -16,6 +16,10 @@ class Settings(BaseSettings):
 	SECRET: str
 	FRONTEND_URL: str
 	VITE_API_URL: str
+	GOOGLE_CREDENTIALS_PISCINE_B64: str
+	GOOGLE_CREDENTIALS_GALAXY_B64: str
+	GOOGLE_CREDENTIALS_SPACE_INVADER_B64: str
+	GOOGLE_CREDENTIALS_GALLERY_B64: str
 
 	model_config = ConfigDict(env_file=".env")
 

@@ -1,4 +1,5 @@
-from ..rooms.repository import crud
+from .repository import crud
+from ..google import service as google_service
 from uuid import UUID
 
 db = crud()
@@ -46,6 +47,9 @@ async def register_booking(
 		raise PermissionError("This room is resereved for staff members")
 	resource: dict = db.db_insert_booking(intra, room_name, begin_at, end_at, is_staff)
 
+	event_id = await google_service.create_event(room_name, begin_at, end_at)
+	db.db_update_google_event_id(resource["id"], event_id)
+
 	return resource
 
 async def delete_booking(
@@ -76,6 +80,8 @@ async def delete_booking(
 	if not is_staff and booking["intra"] != login:
 		raise PermissionError("Not authorized to delete this booking")
 	db.db_delete_booking(id)
+	if booking["google_event_id"]:
+		await google_service.delete_event(room_name, booking["google_event_id"])
 
 async def update_booking(
 	room_name: str,

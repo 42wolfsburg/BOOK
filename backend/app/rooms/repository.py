@@ -57,6 +57,45 @@ class crud:
 		finally:
 			get_pool().putconn(conn)
 
+	def db_update_google_event_id(self, id: UUID, event_id: str) -> str:
+		"""
+		CRUD operation responsible for attaching a Google Calendar event ID
+		to an existing booking, after the event has been created.
+
+		:Parameters:
+		------------
+		id: UUID
+			Unique ID given during booking operation.
+
+		event_id: str
+			Google Calendar event ID returned by the Calendar API on creation.
+
+		:Returns:
+		---------
+		resource: dict
+			Dictionary containing the updated google_event_id.
+		"""
+		logger.info(f"Updating google calendar for event with id: {id}")
+		conn = get_pool().getconn()
+		try:
+			with conn.cursor() as cursor:
+				cursor.execute(
+				"""
+				UPDATE bookings
+				SET google_event_id = %s
+				WHERE id = %s
+				RETURNING google_event_id
+				""", (event_id, str(id)))
+				row = cursor.fetchone()
+				if row is None:
+					raise HTTPException(status_code=404, detail={"Booking not found."})
+				column = [desc[0] for desc in cursor.description]
+				resource = dict(zip(column, row))
+			conn.commit()
+			return resource
+		finally:
+			get_pool().putconn(conn)
+
 	def db_get_booking_per_room(
 		self,
 		room_name: str
@@ -166,7 +205,6 @@ class crud:
 				column = [desc[0] for desc in cursor.description]
 				resource = dict(zip(column, row))
 			conn.commit()
-			print("here in repository")
 			return resource
 		finally:
 			get_pool().putconn(conn)
@@ -182,11 +220,10 @@ class crud:
 		logger.info(f"GET called for id: {id}")
 		conn = get_pool().getconn()
 		try:
-			print("here in repository")
 			with conn.cursor() as cursor:
 				cursor.execute(
 				"""
-				SELECT begin_at, end_at, intra, is_staff
+				SELECT begin_at, end_at, intra, is_staff, google_event_id
 				FROM bookings
 				WHERE id = %s
 				AND room_name = %s
