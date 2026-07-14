@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { Calendar, momentLocalizer} from "react-big-calendar";
 
@@ -8,6 +8,8 @@ import DeleteBooking from '../components/DeleteBooking'
 import CalendarToolbar from "../components/CalendarToolbar";
 
 const localizer = momentLocalizer(moment);
+
+const MOBILE_BREAKPOINT = 640;
 
 export default function CalendarView({
   events,
@@ -30,6 +32,16 @@ export default function CalendarView({
   }, []);
 
   const isMobile = width < 480;
+  const isPhoneWidth = width < MOBILE_BREAKPOINT;
+
+  // switch to day view on phones, week view on larger screens, when crossing the breakpoint
+  const prevIsPhoneWidthRef = useRef(isPhoneWidth);
+  useEffect(() => {
+    if (prevIsPhoneWidthRef.current !== isPhoneWidth) {
+      setCalendarView(isPhoneWidth ? "day" : "week");
+      prevIsPhoneWidthRef.current = isPhoneWidth;
+    }
+  }, [isPhoneWidth, setCalendarView]);
 
   const formats = {
     dayFormat: (date, culture, loc) =>

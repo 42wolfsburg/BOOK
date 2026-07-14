@@ -19,9 +19,9 @@ export default function CalendarHeader({
   return (
     <div className="mb-6 flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
       {/* left: Select Room label + dropdown */}
-      <div className="flex items-center gap-3">
-        <div className="ext-sm text-slate-500 flex-shrink-0 whitespace-nowrap">Select Room</div>
-        <div className="w-[280px]">
+      <div className="flex items-center gap-3 min-w-0 w-full xl:w-auto">
+        <div className="text-sm text-slate-500 flex-shrink-0 whitespace-nowrap">Select Room</div>
+        <div className="min-w-0 flex-1 sm:w-[280px] sm:flex-none">
           <RoomDropdown
             rooms={rooms}
             selectedRoom={selectedRoom}

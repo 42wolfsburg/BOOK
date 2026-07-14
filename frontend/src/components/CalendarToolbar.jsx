@@ -2,11 +2,11 @@ import React from "react";
 
 export default function CalendarToolbar({ label, onNavigate, onView, view }) {
   return (
-    <div className="flex items-center border-b border-slate-100">
+    <div className="flex items-center justify-center border-b border-slate-100 sm:justify-start">
       <div className="flex items-center gap-2 p-3">
         <button
           onClick={() => onNavigate("TODAY")}
-          className="flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 hover:bg-slate-50"
+          className="hidden sm:flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 hover:bg-slate-50"
         >
           Today
         </button>
@@ -26,11 +26,11 @@ export default function CalendarToolbar({ label, onNavigate, onView, view }) {
         </button>
       </div>
 
-      <div className="flex-1 text-center px-3">
+      <div className="hidden flex-1 text-center px-3 sm:block">
         <div className="text-lg font-semibold text-slate-900">{label}</div>
       </div>
 
-      <div className="p-3">
+      <div className="hidden p-3 sm:block">
         <select
           value={view}
           onChange={(e) => onView(e.target.value)}

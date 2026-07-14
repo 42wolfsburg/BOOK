@@ -1,7 +1,12 @@
 import { useState, useRef } from "react";
 import moment from "moment";
 
-export default function useCalendar(initialDate = new Date(), initialView = "week") {
+const MOBILE_BREAKPOINT = 640;
+
+const getDefaultView = () =>
+  typeof window !== "undefined" && window.innerWidth < MOBILE_BREAKPOINT ? "day" : "week";
+
+export default function useCalendar(initialDate = new Date(), initialView = getDefaultView()) {
   const [currentDate, setCurrentDate] = useState(initialDate);
   const [calendarView, setCalendarView] = useState(initialView);
   const dateInputRef = useRef(null);
