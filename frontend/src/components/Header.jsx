@@ -41,7 +41,7 @@ export default function Header() {
           </div>
 
           <h1 className="truncate text-sm sm:text-base md:text-xl font-semibold text-slate-900">
-            Workspace Booking
+            BOOK: BOOK's Online Occupancy Keeper
           </h1>
         </div>
 

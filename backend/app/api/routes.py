@@ -32,9 +32,21 @@ async def booking(
 	id: UUID
 	) -> dict:
 	"""
-	booking data request
+	Endpoint responsible for retrieving bookings by ID. This specific endpoint is useful
+	when you need to retrieve just one booking.
 
-	status: default 202, success 200, fail 400
+	:Parameters:
+	------------
+	room_name: RoomName
+		In content, this is just a string that should match our list of meeting room names.
+
+	id: UUID
+		General UUID provided by the frontend.
+
+	:Returns:
+	---------
+	resource: dict
+		All information regarding that specific booking.
 	"""
 	try:
 		resource = await service.get_booking(
@@ -49,9 +61,19 @@ async def booking(
 @api_router.get("/rooms/{room_name}/bookings", status_code=status.HTTP_200_OK)
 async def booking(room_name: RoomName) -> dict:
 	"""
-	booking data request
+	Endpoint responsible for retrieving bookings of specific meeting room. It retrieves
+	everything that that specific meeting room has in the database for future bookings.
+	Old bookings are not retrieved as they are dead data and are scheduled for deletion.
 
-	status: default 202, success 200, fail 400
+	:Parameters:
+	------------
+	room_name: RoomName
+		In content, this is just a string that should match our list of meeting room names.
+
+	:Returns:
+	---------
+	resource: dict
+		All bookings from that specific meeting room.
 	"""
 	try:
 		resource = await service.get_booking_per_room(room_name=room_name)
@@ -69,9 +91,17 @@ async def booking(
 	user: Annotated[dict, Depends(get_current_user)]
 	) -> dict:
 	"""
-	booking request
+	Endpoint responsible for saving one booking of specific meeting room. 
 
-	status: default 202, success 201, slot used 502, other 400
+	:Parameters:
+	------------
+	room_name: RoomName
+		In content, this is just a string that should match our list of meeting room names.
+
+	:Returns:
+	---------
+	resource: dict
+		Payload with data pertaining to the specific booking from that meeting room.
 	"""
 	try:
 		resource = await service.register_booking(
@@ -93,9 +123,22 @@ async def booking(
 	id: UUID
 	) -> dict:
 	"""
-	booking patch
+	Endpoint responsible for patching specific bookings. It is not being currently used by
+	frontend, but everything in this part of the stack is wired for it to work in case it
+	would be used.
 
-	status: default 202, success 200, fail 400
+	:Parameters:
+	------------
+	room_name: RoomName
+		In content, this is just a string that should match our list of meeting room names.
+
+	id: UUID
+		General UUID provided by the frontend.
+
+	:Returns:
+	---------
+	resource: dict
+		Updated information regarding booking
 	"""
 	try:
 		resource = await service.update_booking(
@@ -116,9 +159,16 @@ async def booking(
 	user: Annotated[dict, Depends(get_current_user)]
 	) -> None:
 	"""
-	booking delete
+	Endpoint responsible for deletion of bookings. Nothing is returned as this is the industry
+	standard and REST architecture compliance method.
 
-	status: always 204 (not really true)
+	:Parameters:
+	------------
+	room_name: RoomName
+		In content, this is just a string that should match our list of meeting room names.
+
+	id: UUID
+		General UUID provided by the frontend.
 	"""
 	try:
 		await service.delete_booking(

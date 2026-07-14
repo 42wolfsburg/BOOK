@@ -27,6 +27,13 @@ ROOM_CALENDAR_IDS = {
 	"gallery": "meeting-gallery@42wolfsburg.de",
 }
 
+# ROOM_CALENDAR_IDS = {
+#     "piscine": "c_188boo9eom1tghu9jg3hckkubhvc4@resource.calendar.google.com",
+# 	"galaxy": "c_1880svjncbbdmgnljik4631u2pqaa@resource.calendar.google.com",
+# 	"space-invader": "c_1886k9c94hjbaja7mva2aigl392qk@resource.calendar.google.com",
+# 	"gallery": "c_1888glagg1v10i4ukllhi7b3m8sv0@resource.calendar.google.com",
+# }
+
 def _to_iso(timestamp: int) -> str:
 	return datetime.fromtimestamp(timestamp, tz=timezone.utc).isoformat()
 
