@@ -21,7 +21,6 @@ async def root():
 		"status": "development"
 	})
 
-
 # @api_router.get("/rooms")
 # async def rooms():
 # 	return await service.get_all_bookings()
@@ -80,9 +79,9 @@ async def booking(room_name: RoomName) -> dict:
 		if resource is None:
 			raise HTTPException(status_code=201, detail=str(err))
 		return { "resource": resource }
-	except Exception as err:
+	except Exception as e:
 		logger.error(str(e))
-		raise HTTPException(status_code=404, detail=str(err))
+		raise HTTPException(status_code=404, detail=str(e))
 
 @api_router.post("/rooms/{room_name}/bookings", status_code=status.HTTP_201_CREATED)
 async def booking(
