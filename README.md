@@ -163,9 +163,7 @@ These three variables are intentionally kept separate rather than reused, since 
 
 ## Current Status
 
-The OAuth2 authentication system is functionally complete: login, callback, session validation, and logout are all implemented on the backend, with matching route protection and logout handling on the frontend.
 
-The current focus is connecting the data pipeline between backend and frontend, replacing the hardcoded room and booking data on the frontend (`src/data/rooms.js`) with live calls to the `/api/rooms` endpoints.
 
 ## Design Principles
 
