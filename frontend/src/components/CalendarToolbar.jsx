@@ -26,7 +26,7 @@ export default function CalendarToolbar({ label, onNavigate, onView, view }) {
         </button>
       </div>
 
-      <div className="hidden flex-1 text-center px-3 sm:block">
+      <div className="flex-1 text-center px-3">
         <div className="text-lg font-semibold text-slate-900">{label}</div>
       </div>
 
