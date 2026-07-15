@@ -106,6 +106,33 @@ class crud:
 		finally:
 			get_pool().putconn(conn)
 
+	def db_update_google_event_id(self, id: UUID, event_id: str) -> dict:
+		"""
+		CRUD operation responsible for attaching a Google Calendar event ID
+		to an existing booking, after the event has been created.
+		"""
+		logger.info(f"Updating google calendar for event with id: {id}")
+		conn = get_pool().getconn()
+		try:
+			with conn.cursor() as cursor:
+				cursor.execute(
+				"""
+				UPDATE bookings
+				SET google_event_id = %s
+				WHERE id = %s
+				RETURNING google_event_id
+				""", (event_id, str(id)))
+				row = cursor.fetchone()
+				if row is None:
+					raise HTTPException(status_code=404, detail={"Booking not found."})
+				column = [desc[0] for desc in cursor.description]
+				resource = dict(zip(column, row))
+			conn.commit()
+			return resource
+		finally:
+			get_pool().putconn(conn)
+
+
 	def db_delete_booking_by_google_event_id(self, event_id: str) -> None:
 		"""
 		CRUD operation removing a booking when its Google Calendar event was
