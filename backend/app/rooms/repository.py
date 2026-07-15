@@ -2,6 +2,7 @@ from loguru import logger
 from uuid import UUID
 from fastapi import HTTPException
 from ..database.init import get_pool
+from datetime import datetime
 
 class crud:
 	def db_insert_booking(
