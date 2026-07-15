@@ -74,6 +74,7 @@ async def callback(request: Request, code: str, state: str):
 			})
 
 		if token_res.status_code != 200:
+			logger.error(f"42 token exchange failed {token_res.status_code}: {token_res.text}")
 			raise HTTPException(status_code=400, detail="Failed to exchange code")
 
 		ft_access_token = token_res.json()["access_token"]
