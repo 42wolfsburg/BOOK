@@ -1,7 +1,6 @@
 from .repository import crud
 from ..google import service as google_service
 
-import time
 from uuid import UUID
 
 db = crud()
@@ -141,27 +140,6 @@ async def get_booking(
 
 async def get_booking_per_room(room_name: str) -> dict:
 	resource: list = db.db_get_booking_per_room(room_name)
-	synced_event_ids = {row["google_event_id"] for row in resource if row["google_event_id"]}
-
-	now = int(time.time())
-	window_start = now - (30 * 24 * 3600)
-	window_end = now + (180 * 24 * 3600)
-
-	google_events = await google_service.get_events(room_name, window_start, window_end)
-
-	for event in google_events:
-		if event["id"] in synced_event_ids:
-			continue
-		resource.append({
-			"id": event["id"],
-			"intra": event["creator"],
-			"room_name": room_name,
-			"begin_at": event["begin_at"],
-			"end_at": event["end_at"],
-			"is_staff": None,
-			"google_event_id": event["id"],
-		})
-
 	return resource
 
 # async def get_all_bookings() -> dict:
