@@ -1,5 +1,7 @@
 from .repository import crud
 from ..google import service as google_service
+
+import time
 from uuid import UUID
 
 db = crud()
@@ -47,7 +49,7 @@ async def register_booking(
 		raise PermissionError("This room is resereved for staff members")
 	resource: dict = db.db_insert_booking(intra, room_name, begin_at, end_at, is_staff)
 
-	event_id = await google_service.create_event(room_name, begin_at, end_at)
+	event_id = await google_service.create_event(room_name, begin_at, end_at, intra)
 	db.db_update_google_event_id(resource["id"], event_id)
 
 	return resource
@@ -109,6 +111,8 @@ async def update_booking(
 		Dictionary containing updated booking following REST architecture.
 	"""
 	resource: dict = db.db_update_booking(room_name, id, begin_at, end_at)
+	if resource["google_event_id"]:
+		await google_service.update_event(room_name, resource["google_event_id"], begin_at, end_at)
 	return resource
 
 async def get_booking(
@@ -136,29 +140,33 @@ async def get_booking(
 	return resource
 
 async def get_booking_per_room(room_name: str) -> dict:
-	"""
-	Function responsible for returning specific booking according to a correct ID
-	provided during registration of the same.
+	resource: list = db.db_get_booking_per_room(room_name)
+	synced_event_ids = {row["google_event_id"] for row in resource if row["google_event_id"]}
 
-	:Parameters:
-	------------
-	id: str
-		UUID provided during the registration of booking.
+	now = int(time.time())
+	window_start = now - (30 * 24 * 3600)
+	window_end = now + (180 * 24 * 3600)
 
-	:Returns:
-	---------
-	resource: dict
-		Resource following API REST architectural standards for GET.
-		Contains all information about the booking: starting and end time,
-		intra, name of the room in which booking is taking place, and 
-		boolean value indicating if it's a staff member or not.
-	"""
-	resource: dict = db.db_get_booking_per_room(room_name)
+	google_events = await google_service.get_events(room_name, window_start, window_end)
+
+	for event in google_events:
+		if event["id"] in synced_event_ids:
+			continue
+		resource.append({
+			"id": event["id"],
+			"intra": event["creator"],
+			"room_name": room_name,
+			"begin_at": event["begin_at"],
+			"end_at": event["end_at"],
+			"is_staff": None,
+			"google_event_id": event["id"],
+		})
+
 	return resource
 
-async def get_all_bookings() -> dict:
-	"""
-	NOT SUPPOSED TO BE DEPLOYED! MOSTLY FOR TESTING PURPOSES
-	"""
-	resource = db.db_get_all_bookings()
-	return resource
+# async def get_all_bookings() -> dict:
+# 	"""
+# 	NOT SUPPOSED TO BE DEPLOYED! MOSTLY FOR TESTING PURPOSES
+# 	"""
+# 	resource = db.db_get_all_bookings()
+# 	return resource

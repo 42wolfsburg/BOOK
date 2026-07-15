@@ -57,42 +57,68 @@ class crud:
 		finally:
 			get_pool().putconn(conn)
 
-	def db_update_google_event_id(self, id: UUID, event_id: str) -> str:
+	def db_upsert_google_booking(
+		self,
+		room_name: str,
+		event_id: str,
+		begin_at: datetime,
+		end_at: datetime,
+		creator: str
+		) -> dict:
 		"""
-		CRUD operation responsible for attaching a Google Calendar event ID
-		to an existing booking, after the event has been created.
-
-		:Parameters:
-		------------
-		id: UUID
-			Unique ID given during booking operation.
-
-		event_id: str
-			Google Calendar event ID returned by the Calendar API on creation.
-
-		:Returns:
-		---------
-		resource: dict
-			Dictionary containing the updated google_event_id.
+		CRUD operation reconciling a booking from a Google Calendar webhook:
+		updates the matching row if this event was already synced (app-made,
+		then rescheduled directly on Google), or inserts a new one if it was
+		created straight on Google Calendar with no app-side row yet.
 		"""
-		logger.info(f"Updating google calendar for event with id: {id}")
+		logger.info(f"Reconciling google event {event_id} for {room_name}")
 		conn = get_pool().getconn()
 		try:
 			with conn.cursor() as cursor:
 				cursor.execute(
 				"""
-				UPDATE bookings
-				SET google_event_id = %s
-				WHERE id = %s
-				RETURNING google_event_id
-				""", (event_id, str(id)))
+				SELECT id FROM bookings WHERE google_event_id = %s
+				""", (event_id,))
+				existing = cursor.fetchone()
+
+				if existing:
+					cursor.execute(
+					"""
+					UPDATE bookings
+					SET begin_at = %s, end_at = %s
+					WHERE google_event_id = %s
+					RETURNING id, intra, room_name, begin_at, end_at, is_staff, google_event_id
+					""", (begin_at, end_at, event_id))
+				else:
+					cursor.execute(
+					"""
+					INSERT INTO bookings (intra, room_name, begin_at, end_at, is_staff, google_event_id)
+					VALUES (%s, %s, %s, %s, %s, %s)
+					RETURNING id, intra, room_name, begin_at, end_at, is_staff, google_event_id
+					""", (creator, room_name, begin_at, end_at, False, event_id))
+
 				row = cursor.fetchone()
-				if row is None:
-					raise HTTPException(status_code=404, detail={"Booking not found."})
 				column = [desc[0] for desc in cursor.description]
 				resource = dict(zip(column, row))
 			conn.commit()
 			return resource
+		finally:
+			get_pool().putconn(conn)
+
+	def db_delete_booking_by_google_event_id(self, event_id: str) -> None:
+		"""
+		CRUD operation removing a booking when its Google Calendar event was
+		cancelled directly (not through the app).
+		"""
+		logger.info(f"Deletion by google event id: {event_id}")
+		conn = get_pool().getconn()
+		try:
+			with conn.cursor() as cursor:
+				cursor.execute(
+				"""
+				DELETE FROM bookings WHERE google_event_id = %s
+				""", (event_id,))
+			conn.commit()
 		finally:
 			get_pool().putconn(conn)
 
@@ -119,7 +145,7 @@ class crud:
 			with conn.cursor() as cursor:
 				cursor.execute(
 				"""
-				SELECT id, begin_at, end_at, intra, is_staff
+				SELECT id, begin_at, end_at, intra, is_staff, google_event_id
 				FROM bookings
 				WHERE room_name = %s
 				""", (room_name,))
@@ -197,7 +223,7 @@ class crud:
 				UPDATE bookings
 				SET begin_at = to_timestamp(%s), end_at = to_timestamp(%s)
 				WHERE id = %s AND room_name = %s
-				RETURNING id, intra, room_name, begin_at, end_at, is_staff
+				RETURNING id, intra, room_name, begin_at, end_at, is_staff, google_event_id
 				""", (begin_at, end_at, str(id), room_name))
 				row = cursor.fetchone()
 				if row is None:
