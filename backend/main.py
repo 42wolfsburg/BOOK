@@ -2,8 +2,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 from contextlib import asynccontextmanager
+
 from app.api.routes import api_router
 from app.auth.routes import auth_router
+from app.google.routes import google_router
 from app.database.init import init_db, close_db
 from apscheduler.schedulers.background import BackgroundScheduler
 from utils.cleanup import delete_past_bookings
@@ -48,6 +50,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(google_router, prefix="/api/google")
 app.include_router(auth_router, prefix="/auth")
 app.include_router(api_router, prefix="/api")
 
