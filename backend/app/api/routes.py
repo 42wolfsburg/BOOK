@@ -21,10 +21,6 @@ async def root():
 		"status": "development"
 	})
 
-# @api_router.get("/rooms")
-# async def rooms():
-# 	return await service.get_all_bookings()
-
 @api_router.get("/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_200_OK)
 async def booking(
 	room_name: RoomName,
@@ -53,6 +49,9 @@ async def booking(
 			id=id
 			)
 		return {"resource": resource}
+	except PermissionError as e:
+		logger.error(str(e))
+		raise HTTPException(status_code=403, detail=str(e))
 	except Exception as err:
 		logger.error(str(e))
 		raise HTTPException(status_code=404, detail=str(err))
@@ -79,6 +78,9 @@ async def booking(room_name: RoomName) -> dict:
 		if resource is None:
 			raise HTTPException(status_code=201, detail=str(err))
 		return { "resource": resource }
+	except PermissionError as e:
+		logger.error(str(e))
+		raise HTTPException(status_code=403, detail=str(e))
 	except Exception as e:
 		logger.error(str(e))
 		raise HTTPException(status_code=404, detail=str(e))
@@ -111,6 +113,9 @@ async def booking(
 			is_staff=user['is_staff']
 			)
 		return { "resource": resource }
+	except PermissionError as e:
+		logger.error(str(e))
+		raise HTTPException(status_code=403, detail=str(e))
 	except Exception as e:
 		logger.error(str(e))
 		raise HTTPException(status_code=400, detail=str(e))
@@ -147,6 +152,9 @@ async def booking(
 			id=id
 			)
 		return { "resource": resource }
+	except PermissionError as e:
+		logger.error(str(e))
+		raise HTTPException(status_code=403, detail=str(e))
 	except Exception as err:
 		logger.error(str(e))
 		raise HTTPException(status_code=400, detail=str(err))
