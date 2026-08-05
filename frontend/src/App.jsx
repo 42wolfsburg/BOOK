@@ -34,12 +34,14 @@ export default function App() {
     setBookingData,
     openBookingModal,
     saveBooking,
+    isSaving,
     selectedEvent,
     showDeleteModal,
     openDeleteModal,
     closeDeleteModal,
     confirmDelete,
     deleteBooking,
+    deletingId,
   } = useBookings(currentRoom);
 
   return (
@@ -73,6 +75,7 @@ export default function App() {
               onOpenBookingModal={openBookingModal}
               onSelectEvent={openDeleteModal}
               onQuickDelete={deleteBooking}
+              deletingId={deletingId}
 
             />
           </ResponsiveLayout>
@@ -84,6 +87,7 @@ export default function App() {
           bookingData={bookingData}
           setBookingData={setBookingData}
           onSave={saveBooking}
+          isSaving={isSaving}
         />
 
         <DeleteBookingModal
@@ -91,6 +95,7 @@ export default function App() {
           event={selectedEvent}
           onClose={closeDeleteModal}
           onDelete={confirmDelete}
+          isDeleting={!!selectedEvent && deletingId === selectedEvent.id}
         />
       </div>
     </div>
