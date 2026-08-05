@@ -11,7 +11,7 @@ import CalendarHeader from "./components/CalendarHeader";
 import { rooms } from "./data/rooms";
 
 export default function App() {
-  const [selectedRoom, setSelectedRoom] = useState(3);
+  const [selectedRoom, setSelectedRoom] = useState(1);
 
   const {
     currentDate,
