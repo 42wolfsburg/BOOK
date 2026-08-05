@@ -8,6 +8,7 @@ export default function DeleteBookingModal({
   event,
   onClose,
   onDelete,
+  isDeleting,
 }) {
   if (!event) return null;
   const login = useContext(AuthContext)
@@ -54,21 +55,25 @@ export default function DeleteBookingModal({
             <div className="mt-8 flex items-center justify-end gap-3">
               <button
                 onClick={onClose}
-                className="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                disabled={isDeleting}
+                className="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Close
               </button>
 
             <button
             onClick={canDelete ? onDelete : undefined}
-            disabled={!canDelete}
-            className={`rounded-2xl px-5 py-3 text-sm font-medium transition ${
+            disabled={!canDelete || isDeleting}
+            className={`flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-medium transition ${
                 canDelete
-                ? "bg-red-600 text-white hover:bg-red-700"
+                ? "bg-red-600 text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-70"
                 : "bg-slate-200 text-slate-400 cursor-not-allowed"
             }`}
             >
-            Delete Booking
+            {isDeleting && (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+            )}
+            {isDeleting ? "Deleting..." : "Delete Booking"}
             </button>
             </div>
           </motion.div>

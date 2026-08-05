@@ -20,6 +20,7 @@ export default function CalendarView({
   onOpenBookingModal,
   onSelectEvent,
   onQuickDelete,
+  deletingId,
 }) {
   const [selectedSlot, setSelectedSlot] = useState(null);
 
@@ -91,7 +92,13 @@ export default function CalendarView({
         toolbar={true}
         components={{
           toolbar: CalendarToolbar,
-          event: (props) => <DeleteBooking {...props} onDelete={onQuickDelete} />,
+          event: (props) => (
+            <DeleteBooking
+              {...props}
+              onDelete={onQuickDelete}
+              isDeleting={deletingId === props.event.id}
+            />
+          ),
 
         }}
         formats={formats}

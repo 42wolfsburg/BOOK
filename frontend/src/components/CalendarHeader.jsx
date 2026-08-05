@@ -1,6 +1,8 @@
 import React from "react";
 import moment from "moment";
 import RoomDropdown from "./RoomDropdown";
+import { AuthContext } from './AuthGate';
+import { useContext, useState } from 'react'
 
 export default function CalendarHeader({
   currentDate,
@@ -16,6 +18,11 @@ export default function CalendarHeader({
   selectedRoom,
   setSelectedRoom,
 }) {
+  const login = useContext(AuthContext);
+  const [dummyUser, setDummyUser] = useState(null);
+
+  if (login.login === "broken") { setDummyUser(true); };
+
   return (
     <div className="mb-6 flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
       {/* left: Select Room label + dropdown */}
@@ -32,7 +39,7 @@ export default function CalendarHeader({
 
       {/* right: New Booking button */}
       <div>
-        <button
+        {!dummyUser && <button
           onClick={() =>
             onOpenQuickBooking({
               start: new Date(),
@@ -42,7 +49,7 @@ export default function CalendarHeader({
           className="flex h-[44px] items-center justify-center rounded-xl bg-violet-600 px-5 text-sm font-medium leading-none text-white transition hover:bg-violet-700"
         >
           + New Booking
-        </button>
+        </button>}
       </div>
     </div>
   );

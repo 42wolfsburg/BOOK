@@ -11,6 +11,7 @@ export default function BookingModal({
   bookingData,
   setBookingData,
   onSave,
+  isSaving,
 }) {
   if (!bookingData) return null;
 
@@ -103,16 +104,21 @@ export default function BookingModal({
 
               <button
                 onClick={onClose}
-                className="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                disabled={isSaving}
+                className="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Cancel
               </button>
 
               <button
                 onClick={onSave}
-                className="rounded-2xl bg-violet-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-violet-700"
+                disabled={isSaving}
+                className="flex items-center gap-2 rounded-2xl bg-violet-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-70"
               >
-                Save Booking
+                {isSaving && (
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                )}
+                {isSaving ? "Saving..." : "Save Booking"}
               </button>
 
             </div>

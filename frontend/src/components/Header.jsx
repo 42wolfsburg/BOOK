@@ -1,12 +1,15 @@
 import { motion } from "framer-motion";
 import logo from "../assets/logo.png";
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from "./AuthGate"
 
 export default function Header() {
   const login = useContext(AuthContext)
   const nav = useNavigate()
+  const [dummyUser, setDummyUser] = useState(null)
+
+  if (login.login === "broken") { setDummyUser(true); }
 
   const handleLogout = async () => {
     try {
@@ -57,17 +60,17 @@ export default function Header() {
             />
 
             <p className="block text-xs sm:text-sm font-medium text-slate-800 max-w-[60px] sm:max-w-[80px] truncate">
-              {login.login && <span>{login.login}</span>}
+              {!dummyUser && login.login && <span>{login.login}</span>}
             </p>
           </div>
 
           {/* Logout */}
-          <button 
+          {!dummyUser && <button 
             onClick={handleLogout}
             className="h-9 sm:h-10 md:h-[44px] px-2 sm:px-3 md:px-5 text-xs sm:text-sm font-medium text-red-600 bg-red-50 border border-red-100 rounded-xl hover:bg-red-100 whitespace-nowrap"
           >
             Logout
-          </button>
+          </button>}
 
         </div>
       </div>

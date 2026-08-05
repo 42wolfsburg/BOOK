@@ -19,13 +19,13 @@ export default function Landing() {
                 <main className="flex flex-col items-center gap-6">
 
                     <h1 className="uppercase font-light leading-[0.95] tracking-[6px] sm:tracking-[10px] md:tracking-[12px] text-[36px] sm:text-[54px] md:text-[72px]">
-                        BOOKING <span className="text-[#72a8e6] font-semibold">SYSTEM</span>
+                        BOOK's <span className="text-[#72a8e6] font-semibold">SYSTEM</span>
                     </h1>
 
                     <div className="w-14 sm:w-[72px] h-[3px] sm:h-[4px] bg-[#72a8e6]" />
 
                     <p className="font-mono text-[#4b5563] text-sm tracking-[2px]">
-                        Book meetings. Manage availability.
+                        BOOK's Online Occupancy Keeper
                     </p>
 
                     <button
@@ -41,6 +41,9 @@ export default function Landing() {
                     <span>INTERNAL TOOL</span>
                     <span>•</span>
                     <span>42 WOLFSBURG</span>
+                    <span>•</span>
+                    <span>Made by fdessoy-, spenev, and mimeyer</span>
+
                 </footer>
 
             </div>
