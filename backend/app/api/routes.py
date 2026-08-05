@@ -18,7 +18,7 @@ async def root():
 		"title": "BOOK",
 		"version": "1.0.0",
 		"Author": "42Wolfsburg",
-		"status": "development"
+		"status": "production"
 	})
 
 @api_router.get("/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_200_OK)
