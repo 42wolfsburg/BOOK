@@ -8,6 +8,8 @@ export default function useBookings(currentRoom) {
   const [bookingData, setBookingData] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
   const login = useContext(AuthContext)
 
   useEffect(() => {
@@ -45,21 +47,29 @@ export default function useBookings(currentRoom) {
       is_staff: login.isStaff,
     };
 
-    const { resource } = await postBookings(payload)
+    setIsSaving(true);
+    try {
+      const { resource } = await postBookings(payload)
 
-    setEvents((prev) => [
-      ...prev,
-      {
-        id: resource.id,
-        title: login.login,
-        start: bookingData.start,
-        end: bookingData.end
-      }
-    ]);
-    setShowModal(false);
+      setEvents((prev) => [
+        ...prev,
+        {
+          id: resource.id,
+          title: login.login,
+          start: bookingData.start,
+          end: bookingData.end
+        }
+      ]);
+      setShowModal(false);
+    } catch (e) {
+      alert("Failed to save booking. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const deleteBooking = async (event) => {
+    setDeletingId(event.id);
     try {
       await deleteBookingById({
         room_name: currentRoom.slug,
@@ -68,6 +78,9 @@ export default function useBookings(currentRoom) {
       setEvents((prev) => prev.filter((e) => e.id !== event.id));
     } catch (e) {
       console.error("Failed to delete booking", e);
+      alert("Failed to delete booking. Please try again.");
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -88,8 +101,8 @@ export default function useBookings(currentRoom) {
 
   return {
     events, setEvents, showModal, setShowModal,
-    bookingData, setBookingData, openBookingModal, saveBooking,
+    bookingData, setBookingData, openBookingModal, saveBooking, isSaving,
     selectedEvent, showDeleteModal, openDeleteModal, closeDeleteModal, confirmDelete,
-    deleteBooking
+    deleteBooking, deletingId
   };
 }
