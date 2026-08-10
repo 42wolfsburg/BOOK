@@ -52,9 +52,9 @@ async def booking(
 	except PermissionError as e:
 		logger.error(str(e))
 		raise HTTPException(status_code=403, detail=str(e))
-	except Exception as err:
+	except Exception as e:
 		logger.error(str(e))
-		raise HTTPException(status_code=404, detail=str(err))
+		raise HTTPException(status_code=404, detail=str(e))
 
 @api_router.get("/rooms/{room_name}/bookings", status_code=status.HTTP_200_OK, dependencies=[Depends(get_current_user)])
 async def booking(room_name: RoomName) -> dict:
@@ -155,9 +155,9 @@ async def booking(
 	except PermissionError as e:
 		logger.error(str(e))
 		raise HTTPException(status_code=403, detail=str(e))
-	except Exception as err:
+	except Exception as e:
 		logger.error(str(e))
-		raise HTTPException(status_code=400, detail=str(err))
+		raise HTTPException(status_code=400, detail=str(e))
 
 @api_router.delete("/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def booking(
