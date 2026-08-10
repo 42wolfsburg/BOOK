@@ -184,4 +184,3 @@ Each script has an installable trigger (`onEventUpdated`) watching its resource 
 <a href="https://github.com/MikMey"><img src="https://github.com/MikMey.png" width="50" height="50" alt="MikMey" /></a>
 <a href="https://github.com/StefanPenev"><img src="https://github.com/StefanPenev.png" width="50" height="50" alt="StefanPenev" /></a>
 <a href="https://github.com/triedel42"><img src="https://github.com/triedel42.png" width="50" height="50" alt="triedel42" /></a>
-- [fdessoy-](https://github.com/fjjdessoycaraballo)
