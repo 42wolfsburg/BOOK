@@ -21,7 +21,7 @@ async def root():
 		"status": "production"
 	})
 
-@api_router.get("/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_200_OK)
+@api_router.get("/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_200_OK, dependencies=[Depends(get_current_user)])
 async def booking(
 	room_name: RoomName,
 	id: UUID
@@ -56,7 +56,7 @@ async def booking(
 		logger.error(str(e))
 		raise HTTPException(status_code=404, detail=str(err))
 
-@api_router.get("/rooms/{room_name}/bookings", status_code=status.HTTP_200_OK)
+@api_router.get("/rooms/{room_name}/bookings", status_code=status.HTTP_200_OK, dependencies=[Depends(get_current_user)])
 async def booking(room_name: RoomName) -> dict:
 	"""
 	Endpoint responsible for retrieving bookings of specific meeting room. It retrieves
@@ -120,9 +120,9 @@ async def booking(
 		logger.error(str(e))
 		raise HTTPException(status_code=400, detail=str(e))
 
-@api_router.patch("/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_201_CREATED)
+@api_router.patch("/rooms/{room_name}/bookings/{id}", status_code=status.HTTP_201_CREATED, dependencies=[Depends(get_current_user)])
 async def booking(
-	room_name: RoomName, 
+	room_name: RoomName,
 	pl: BookingRequest,
 	id: UUID
 	) -> dict:
