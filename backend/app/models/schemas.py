@@ -22,7 +22,7 @@ class BookingRequest(BaseModel):
 	def must_be_valid_timestamp(cls, v: int) -> int:
 		if v < 0:
 			raise ValueError("Timestamp cannot be negative")
-		if v > 9_999_999_999:  # year ~2286, reasonable upper bound
+		if v > 9_999_999_999:
 			raise ValueError("Timestamp is unrealistically large")
 		return v
 
@@ -33,6 +33,12 @@ class BookingRequest(BaseModel):
 		if begin is not None and v <= begin:
 			raise ValueError("end_at must be after begin_at")
 		return v
+
+	@model_validator(mode="after")
+	def validate(self) -> 'BookingRequest':
+		if self.end_at > self.begin_at + (unix_hour * 3):
+			raise ValueError("end_at must be within three hours of begin_at")
+		return self
 
 class BookingCreation(BaseModel):
 	intra: str = Field(..., min_length=1, max_length=10)
