@@ -9,7 +9,7 @@ export default function Header() {
   const nav = useNavigate()
   const [dummyUser, setDummyUser] = useState(null)
 
-  if (login.login === "lottwottu") { setDummyUser(true); }
+  if (login.login === "lottwotu") { setDummyUser(true); }
 
   const handleLogout = async () => {
     try {
