@@ -180,10 +180,7 @@ Each script has an installable trigger (`onEventUpdated`) watching its resource 
 
 ### Contributors
 
-[![](https://github.com/fjjdessoycaraballo.png?size=50)](https://github.com/fjjdessoycaraballo)
-[![](https://github.com/MikMey.png?size=50)](https://github.com/MikMey)
-[![](https://github.com/StefanPenev?size=50)](https://github.com/StefanPenev)
-
-- [spenev](https://github.com/StefanPenev)
-- [mimeyer](https://github.com/MikMey)
-- [fdessoy-](https://github.com/fjjdessoycaraballo)
+<a href="https://github.com/fjjdessoycaraballo"><img src="https://github.com/fjjdessoycaraballo.png" width="50" height="50" alt="fjjdessoycaraballo" /></a>
+<a href="https://github.com/MikMey"><img src="https://github.com/MikMey.png" width="50" height="50" alt="MikMey" /></a>
+<a href="https://github.com/StefanPenev"><img src="https://github.com/StefanPenev.png" width="50" height="50" alt="StefanPenev" /></a>
+<a href="https://github.com/triedel42"><img src="https://github.com/triedel42.png" width="50" height="50" alt="triedel42" /></a>
