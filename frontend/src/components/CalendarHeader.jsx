@@ -19,9 +19,7 @@ export default function CalendarHeader({
   setSelectedRoom,
 }) {
   const login = useContext(AuthContext);
-  const [dummyUser, setDummyUser] = useState(null);
-
-  if (login.login === "broken") { setDummyUser(true); };
+  const dummyUser = login.login === "lottwotu" ? true : false;
 
   return (
     <div className="mb-6 flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">

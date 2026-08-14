@@ -1,15 +1,13 @@
 import { motion } from "framer-motion";
 import logo from "../assets/logo.png";
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from "./AuthGate"
 
 export default function Header() {
   const login = useContext(AuthContext)
   const nav = useNavigate()
-  const [dummyUser, setDummyUser] = useState(null)
-
-  if (login.login === "lottwottu") { setDummyUser(true); }
+  const dummyUser = login.login === "lottwotu" ? true : false
 
   const handleLogout = async () => {
     try {

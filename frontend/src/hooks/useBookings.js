@@ -38,6 +38,7 @@ export default function useBookings(currentRoom) {
 
   const saveBooking = async () => {
     if (!bookingData) return;
+    if (login.login === "lottwotu") return;
 
     const payload = {
       room_name: currentRoom.slug,
