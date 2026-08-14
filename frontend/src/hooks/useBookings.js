@@ -2,6 +2,8 @@ import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../components/AuthGate'
 import { getBookings, postBookings, deleteBookingById } from '../services/bookingService'
 
+const POLL_INTERVAL_MS = 8000;
+
 export default function useBookings(currentRoom) {
   const [events, setEvents] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -13,9 +15,12 @@ export default function useBookings(currentRoom) {
   const login = useContext(AuthContext)
 
   useEffect(() => {
+    let ignore = false;
+
     async function loadBookings() {
       try {
         const { resource } = await getBookings(currentRoom.slug);
+        if (ignore) return;
         setEvents(
           resource.map((b) => ({
             id: b.id,
@@ -25,10 +30,17 @@ export default function useBookings(currentRoom) {
           }))
         )
       } catch (e) {
-        throw (e)
+        if (!ignore) throw (e)
       }
     }
+
     loadBookings();
+    const intervalId = setInterval(loadBookings, POLL_INTERVAL_MS);
+
+    return () => {
+      ignore = true;
+      clearInterval(intervalId);
+    };
   }, [currentRoom]);
 
   const openBookingModal = (slot) => {
