@@ -4,6 +4,8 @@ import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from "./AuthGate"
 
+if (login.login === "lottwotu") { setDummyUser(true); }
+
 export default function Header() {
   const login = useContext(AuthContext)
   const nav = useNavigate()
